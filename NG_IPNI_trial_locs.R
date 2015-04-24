@@ -12,7 +12,7 @@ require(rgdal)
 dir.create("NG_trials", showWarnings=F)
 dat_dir <- "./NG_trials"
 
-# download 1MQ Geosurvey data
+# download 1MQ GeoSurvey cropland presence data
 download("https://www.dropbox.com/s/9y1fso9g8qks1pp/1MQ_CRP_pos.csv?dl=0", "./NG_trials/1MQ_CRP_pos.csv", mode="wb")
 geosv <- read.table(paste(dat_dir, "/1MQ_CRP_pos.csv", sep=""), header=T, sep=",")
 
