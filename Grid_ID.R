@@ -30,7 +30,7 @@ gidy <- ifelse(geosv$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
 GID <- paste(gidx, gidy, geosv$L0, sep="-")
 geosv.gid <- cbind(geosv, GID)
 
-# write GPX file … requires GPSBabel to be installed ----------------------
+#+ Write GPX file … requires GPSBabel to be installed ----------------------
 # you can download GPSBabel at: http://www.gpsbabel.org/download.html
 wpts <- geosv.gid[c(1:2,13)]
 write.csv(wpts, "Waypoints.csv", row.names=FALSE)
