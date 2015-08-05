@@ -1,4 +1,4 @@
-#' Generate grid cell waypoints for field navigation
+#' Generate grid cell ID's for field navigation
 #' J. Chen & M. Walsh, August 2015
  
 #+ Required packages
@@ -30,10 +30,11 @@ gidy <- ifelse(geosv$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
 GID <- paste(gidx, gidy, geosv$L0, sep="-")
 geosv.gid <- cbind(geosv, GID)
 
-# write Garmin waypoint file … requires GPSBABEL to be installed ------------
+# write GPX file … requires GPSBABEL to be installed ----------------------
 # download GPSBABEL at: http://www.gpsbabel.org/download.html
-# if your Garmin device is plugged in you can also transfer the resulting gpx file directly
 wpts <- geosv.gid[c(1:2,13)]
 write.csv(wpts, "wpts.csv", row.names=FALSE)
 system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f wpts.csv -o gpx -F wpts.gpx")
+
+# if your e.g. Garmin device is plugged in you can also transfer the resulting gpx file directly
 system("cp wpts.gpx /Volumes/GARMIN/Garmin/GPX")
