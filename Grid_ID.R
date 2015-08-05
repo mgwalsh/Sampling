@@ -30,11 +30,11 @@ gidy <- ifelse(geosv$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
 GID <- paste(gidx, gidy, geosv$L0, sep="-")
 geosv.gid <- cbind(geosv, GID)
 
-# write GPX file … requires GPSBABEL to be installed ----------------------
-# download GPSBABEL at: http://www.gpsbabel.org/download.html
+# write GPX file … requires GPSBabel to be installed ----------------------
+# download GPSBabel at: http://www.gpsbabel.org/download.html
 wpts <- geosv.gid[c(1:2,13)]
-write.csv(wpts, "wpts.csv", row.names=FALSE)
-system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f wpts.csv -o gpx -F wpts.gpx")
+write.csv(wpts, "Waypoints.csv", row.names=FALSE)
+system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f Waypoints.csv -o gpx -F Waypoints.gpx")
 
-# if your e.g. Garmin device is plugged in you can also transfer the resulting gpx file directly
-system("cp wpts.gpx /Volumes/GARMIN/Garmin/GPX")
+# if your e.g. Garmin device is plugged in you can also transfer the resulting GPX file directly
+system("cp Waypoints.gpx /Volumes/GARMIN/Garmin/GPX")
