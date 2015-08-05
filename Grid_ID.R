@@ -1,4 +1,4 @@
-#' Generate grid cell ID's for field navigation
+#' Generate grid cell ID's (GID's) for field navigation
 #' J. Chen & M. Walsh, August 2015
  
 #+ Required packages
@@ -21,7 +21,7 @@ geosv.proj <- as.data.frame(project(cbind(geosv$Lon, geosv$Lat), "+proj=laea +el
 colnames(geosv.proj) <- c("x","y")
 geosv <- cbind(geosv, geosv.proj)
 
-# Generate AfSIS grid cell ID's (GID)
+# Generate AfSIS GID's
 res.pixel <- 1000
 xgid <- ceiling(abs(geosv$x)/res.pixel)
 ygid <- ceiling(abs(geosv$y)/res.pixel)
@@ -31,7 +31,7 @@ GID <- paste(gidx, gidy, geosv$L0, sep="-")
 geosv.gid <- cbind(geosv, GID)
 
 # write GPX file … requires GPSBabel to be installed ----------------------
-# download GPSBabel at: http://www.gpsbabel.org/download.html
+# you can download GPSBabel at: http://www.gpsbabel.org/download.html
 wpts <- geosv.gid[c(1:2,13)]
 write.csv(wpts, "Waypoints.csv", row.names=FALSE)
 system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f Waypoints.csv -o gpx -F Waypoints.gpx")
