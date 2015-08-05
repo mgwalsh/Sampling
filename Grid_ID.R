@@ -34,7 +34,8 @@ geosv.gid <- cbind(geosv, GID)
 # you can download GPSBabel at: http://www.gpsbabel.org/download.html
 wpts <- geosv.gid[c(1:2,13)]
 write.csv(wpts, "Waypoints.csv", row.names=FALSE)
+# note that this system call has to point to the location of your GPSBabel application
 system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f Waypoints.csv -o gpx -F Waypoints.gpx")
 
-# if your e.g. Garmin device is plugged in you can also transfer the resulting GPX file directly
-system("cp Waypoints.gpx /Volumes/GARMIN/Garmin/GPX")
+# if you have Garmin device plugged in, you can also write the resulting GPX file directly with:
+# system("cp Waypoints.gpx /Volumes/GARMIN/Garmin/GPX")
