@@ -38,4 +38,4 @@ write.csv(wpts, "Waypoints.csv", row.names=FALSE)
 system("/Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel -i csv -f Waypoints.csv -o gpx -F Waypoints.gpx")
 
 # if you have Garmin device plugged in, you can also write the file directly to the device with:
-# system("cp Waypoints.gpx /Volumes/GARMIN/Garmin/GPX")
+system("cp Waypoints.gpx /Volumes/GARMIN/Garmin/GPX")
