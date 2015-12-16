@@ -2,10 +2,11 @@
 # M. Walsh, December 2015
 
 # Required packages
-# install.packages(c("downloader","raster","rgdal")), dependencies=TRUE)
+# install.packages(c("downloader","raster","rgdal","sampling")), dependencies=TRUE)
 require(downloader)
 require(rgdal)
 require(raster)
+require(sampling)
 
 # Data download ------------------------------------------------------------
 # Create a "Data" folder in your current working directory
@@ -50,6 +51,6 @@ psites <- as.data.frame(with(crpmk, table(LGA_name, GID10k)))
 psites <- psites[which(psites$Freq>80),] ## select site if frequency of suitable locations is >80%
 
 plga <- as.data.frame(with(psites, table(LGA_name)))
-plga <- plga[which(plga$Freq>3),] ## select LGA if suitable sites is >3 per LGA
+plga <- plga[which(plga$Freq>3),] ## select LGA if suitable sites are >3 per LGA
 write.csv(plga, "Potential LGAs.csv", row.names=F)
 
