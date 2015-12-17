@@ -29,7 +29,7 @@ download("https://www.dropbox.com/s/20tkxozgxu1jbgl/Admin_units.csv?dl=0", "Admi
 admin <- read.table("Admin_units.csv", header=T, sep=",")
 
 # Data setup ---------------------------------------------------------------
-# Generate AfSIS 10k GID's
+# Generate AfSIS 10k GIDs
 res.pixel <- 10000
 xgid <- ceiling(abs(crpmk$x)/res.pixel)
 ygid <- ceiling(abs(crpmk$y)/res.pixel)
@@ -55,7 +55,7 @@ write.csv(psites, "Potential Sites.csv", row.names=F)
 
 # Identify suitable LGAs
 plga <- as.data.frame(with(psites, table(LGA_name)))
-plga <- plga[ which(plga$Freq > 3), ] ## select LGA if suitable GIDs are >3 per LGA
+plga <- plga[ which(plga$Freq > 3), ] ## select LGA if suitable GIDs >3 per LGA
 write.csv(plga, "Potential LGAs.csv", row.names=F)
 
 # Sample suitable GIDs ----------------------------------------------------
