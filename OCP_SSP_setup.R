@@ -47,7 +47,7 @@ crpmk <- cbind.data.frame(crpmk, crpgrid)
 crpmk <- merge(admin, crpmk, by="LGA_ID") ## add State & LGA names
 
 # Tabulate locations by LGAs & GID10k -------------------------------------
-# Identify suitable sites
+# Identify suitable (10*10 km) sites
 psites <- as.data.frame(with(crpmk, table(LGA_name, GID10k)))
 psites <- psites[ which(psites$Freq > 80), ] ## select site if frequency of suitable locations is >80%
 psites <- psites[order(psites$LGA_name,psites$GID10k), ]
