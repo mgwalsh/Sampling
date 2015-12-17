@@ -48,12 +48,12 @@ crpmk <- merge(admin, crpmk, by="LGA_ID") ## add State & LGA names
 
 # Tabulate locations by LGA's & GID10k ------------------------------------
 psites <- as.data.frame(with(crpmk, table(LGA_name, GID10k)))
-psites <- psites[ which(psites$Freq > 80),] ## select site if frequency of suitable locations is >80%
-psites <- psites[order(psites$LGA_name,psites$GID10k),]
+psites <- psites[ which(psites$Freq > 80), ] ## select site if frequency of suitable locations is >80%
+psites <- psites[order(psites$LGA_name,psites$GID10k), ]
 write.csv(psites, "Potential Sites.csv", row.names=F)
 
 plga <- as.data.frame(with(psites, table(LGA_name)))
-plga <- plga[ which(plga$Freq > 3),] ## select LGA if suitable sites are >3 per LGA
+plga <- plga[ which(plga$Freq > 3), ] ## select LGA if suitable sites are >3 per LGA
 write.csv(plga, "Potential LGAs.csv", row.names=F)
 
 # Sample suitable sites ---------------------------------------------------
@@ -62,3 +62,4 @@ slga <- as.vector(sample(plga$LGA_name, 60)) ## sample 60 LGA's
 psites <- psites[psites$LGA_name%in%slga, ] ## identify potential sites within LGA's
 sample <- strata(psites, "LGA_name", size = rep(1, length(slga)), method="srswor") ## sample suitable sites
 ssites <- getdata(psites, sample)
+write.csv(ssites, "Sampled Sites.csv", row.names=F)
