@@ -58,7 +58,7 @@ write.csv(plga, "Potential LGAs.csv", row.names=F)
 
 # Sample suitable sites ---------------------------------------------------
 set.seed(1385321)
-slga <- as.vector(sample(plga$LGA_name, 60)) ## sample of 60 LGA's
-psites <- psites[psites$LGA_name%in%slga, ]
-sample <- strata(psites, "LGA_name", size = rep(1, length(slga)), method="srswor")
+slga <- as.vector(sample(plga$LGA_name, 60)) ## sample 60 LGA's
+psites <- psites[psites$LGA_name%in%slga, ] ## identify potential sites within LGA's
+sample <- strata(psites, "LGA_name", size = rep(1, length(slga)), method="srswor") ## sample suitable sites
 ssites <- getdata(psites, sample)
