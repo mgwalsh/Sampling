@@ -29,7 +29,7 @@ download("https://www.dropbox.com/s/20tkxozgxu1jbgl/Admin_units.csv?dl=0", "Admi
 admin <- read.table("Admin_units.csv", header=T, sep=",")
 
 # Data setup ---------------------------------------------------------------
-# Generate AfSIS 10k GIDs
+# generate AfSIS 10k GIDs
 res.pixel <- 10000
 xgid <- ceiling(abs(crpmk$x)/res.pixel)
 ygid <- ceiling(abs(crpmk$y)/res.pixel)
@@ -38,7 +38,7 @@ gidy <- ifelse(crpmk$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
 GID10k <- paste(gidx, gidy, sep="-")
 crpmk <- cbind(crpmk, GID10k)
 
-# Extract gridded variables at survey locations
+# extract gridded variables at survey locations
 coordinates(crpmk) <- ~x+y
 projection(crpmk) <- projection(grids)
 crpgrid <- extract(grids, crpmk)
@@ -47,19 +47,19 @@ crpmk <- cbind.data.frame(crpmk, crpgrid)
 crpmk <- merge(admin, crpmk, by="LGA_ID") ## add State & LGA names
 
 # Tabulate locations by LGAs & GID10k -------------------------------------
-# Identify suitable 10k GIDs
+# identify suitable 10k GIDs
 psites <- as.data.frame(with(crpmk, table(LGA_name, GID10k)))
 psites <- psites[ which(psites$Freq > 80), ] ## select site if frequency of suitable locations is >80%
 psites <- psites[ order(psites$LGA_name, psites$GID10k), ]
 write.csv(psites, "Potential Sites.csv", row.names=F)
 
-# Identify suitable LGAs
+# identify suitable LGAs
 plga <- as.data.frame(with(psites, table(LGA_name)))
 plga <- plga[ which(plga$Freq > 3), ] ## select LGA if suitable GIDs >3 per LGA
 write.csv(plga, "Potential LGAs.csv", row.names=F)
 
 # Sample suitable GIDs ----------------------------------------------------
-# Sample 1 suitable 10k GID (Site) per LGA
+# sample 1 suitable 10k GID (Site) per LGA
 set.seed(1385321)
 slga <- as.vector(sample(plga$LGA_name, 60)) ## sample 60 LGAs
 psites <- psites[psites$LGA_name%in%slga, ] ## identify potential GIDs within sampled LGAs
