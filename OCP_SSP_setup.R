@@ -59,7 +59,7 @@ plga <- plga[ which(plga$Freq > 3), ] ## select LGA if suitable GIDs >3 per LGA
 write.csv(plga, "Potential LGAs.csv", row.names=F)
 
 # Sample suitable GIDs ----------------------------------------------------
-# Sample suitable GID10k sites
+# Sample 1 suitable 10k GID (Site) per LGA
 set.seed(1385321)
 slga <- as.vector(sample(plga$LGA_name, 60)) ## sample 60 LGAs
 psites <- psites[psites$LGA_name%in%slga, ] ## identify potential GIDs within sampled LGAs
@@ -67,7 +67,7 @@ sample <- strata(psites, "LGA_name", size = rep(1, length(slga)), method="srswor
 ssites <- getdata(psites, sample)
 write.csv(ssites, "Sampled Sites.csv", row.names=F)
 
-# Sample suitable GID1k clusters
+# Sample 10 suitable 1k GIDs (Clusters) per Site
 set.seed(5321)
 sGID10 <- as.vector(ssites$GID10k) 
 pclust <- crpmk[crpmk$GID10k%in%sGID10, ] ## identify potentially suitable 1k clusters
