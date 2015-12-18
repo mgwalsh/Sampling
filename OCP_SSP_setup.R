@@ -50,7 +50,7 @@ crpmk <- merge(admin, crpmk, by="LGA_ID") ## add State & LGA names
 # Identify suitable 10k GIDs
 psites <- as.data.frame(with(crpmk, table(LGA_name, GID10k)))
 psites <- psites[ which(psites$Freq > 80), ] ## select site if frequency of suitable locations is >80%
-psites <- psites[ order(psites$LGA_name,psites$GID10k), ]
+psites <- psites[ order(psites$LGA_name, psites$GID10k), ]
 write.csv(psites, "Potential Sites.csv", row.names=F)
 
 # Identify suitable LGAs
@@ -65,3 +65,13 @@ psites <- psites[psites$LGA_name%in%slga, ] ## identify potential GIDs within sa
 sample <- strata(psites, "LGA_name", size = rep(1, length(slga)), method="srswor") ## sample suitable GIDs
 ssites <- getdata(psites, sample)
 write.csv(ssites, "Sampled Sites.csv", row.names=F)
+
+# Sample suitable GID1k clusters
+set.seed(5321)
+sGID10 <- as.vector(ssites$GID10k) 
+pclust <- crpmk[crpmk$GID10k%in%sGID10, ]
+sample <- strata(pclust, "GID10k", size = rep(10, length(slga)), method="srswor") ## sample suitable 1k clusters
+sclust <- getdata(pclust, sample)
+sclust <- sclust[ order(sclust$LGA_name, sclust$GID10k), ]
+write.csv(sclust, "Sampled Clusters.csv", row.names=F)
+
