@@ -75,6 +75,3 @@ sample <- strata(pclust, "GID10k", size = rep(10, length(slga)), method="srswor"
 sclust <- getdata(pclust, sample)
 sclust <- sclust[ order(sclust$LGA_name, sclust$GID10k), ]
 write.csv(sclust, "Sampled Clusters.csv", row.names=F)
-
-
-
