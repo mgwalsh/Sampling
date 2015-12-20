@@ -69,10 +69,19 @@ write.csv(ssites, "Sampled Sites.csv", row.names=F)
 
 # Sample 10 suitable 1k GIDs (Clusters) per Site
 set.seed(5321)
-sGID10 <- as.vector(ssites$GID10k) 
-pclust <- crpmk[crpmk$GID10k%in%sGID10, ] ## identify potentially suitable 1k clusters
+pGID10 <- as.vector(ssites$GID10k) 
+pclust <- crpmk[crpmk$GID10k%in%pGID10, ] ## identify potentially suitable 1k clusters
 sample <- strata(pclust, "GID10k", size = rep(10, length(slga)), method="srswor") ## sample suitable 1k clusters
 sclust <- getdata(pclust, sample)
 sclust <- sclust[ order(sclust$LGA_name, sclust$GID10k), ]
 write.csv(sclust, "Sampled Clusters.csv", row.names=F)
+
+# Background sample setup -------------------------------------------------
+sGID10 <- as.data.frame(with(sclust, table(GID10k)))
+sGID10 <- sGID10[ which(sGID10$Freq > 0), ]
+sGID10 <- as.vector(sGID10$GID10k)
+pbackg <- crpmk[!crpmk$GID10k%in%sGID10, ] ## identify potential background 1k GIDs
+set.seed(321)
+bclust <- sample(pbackg, 1200) ## random sample of background 1k GIDs
+
 
