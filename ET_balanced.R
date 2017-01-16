@@ -52,14 +52,14 @@ mask <- rmask[sreg,]
 
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
-N <- nrow(mask)  	## Population size (pixels)
+N <- nrow(mask)  	## Population size (in 250 m pixels)
 n <- 500  	    	## Set sample size
 p <- rep(n/N,N)  	## Vector of inclusion probabilities
 
 # draw geographically balanced sample
-set.seed(12358)
-X <- cbind(p, mask[,1], mask[,2])
-rsamp <- cube(p, X)
+set.seed(12358)                   ## sets reapeatable randomization seed
+X <- cbind(p, mask[,1], mask[,2]) ## identifies population
+rsamp <- cube(p, X)               ## samples from population
 
 # plot result
 plot(roi)
