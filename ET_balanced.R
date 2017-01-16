@@ -63,5 +63,5 @@ rsamp <- cube(p, X)
 
 # plot result
 plot(roi)
-points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.8)	
+points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=1)	
 																																																																																										
