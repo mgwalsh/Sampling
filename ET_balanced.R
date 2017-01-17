@@ -57,11 +57,16 @@ n <- 500          ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)   ## Inclusion probabilities
 
 # draw geographically balanced sample
-set.seed(12358)                     ## sets reapeatable randomization seed
+set.seed(123)                       ## sets reapeatable randomization seed
 X <- cbind(p, mask[,1], mask[,2])   ## specifies population
 rsamp <- cube(p, X)                 ## samples from population
 
-# plot result
+# plot sample result
 plot(roi)
-points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=1)	
+points(mask[rsamp,1], mask[rsamp,2], pch=3, col="red", cex=1)
+
+# Write files -------------------------------------------------------------
+x <- mask[rsamp,1]
+y <- mask[rsamp,2]
+xy <- data.frame(cbind(x,y))
 																																																																																										
