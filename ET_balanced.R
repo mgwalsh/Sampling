@@ -92,5 +92,5 @@ gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, p
 
 # needs fixing !!!
 # writeOGR(gpx, dsn = "ET_locs.gpx", dataset_options = "GPX_USE_EXTENSIONS = yes",
-         layer = "waypoints", driver = "GPX", overwrite_layer = T) ## GPX file
+#         layer = "waypoints", driver = "GPX", overwrite_layer = T) ## GPX file
 																																																																																										
