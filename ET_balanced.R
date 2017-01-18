@@ -15,8 +15,8 @@ dir.create("BBSRC_sample", showWarnings=F)
 setwd("./BBSRC_sample")
 
 # Download & stack cropland probabilty & distance to "known roads" grids
-download("https://www.dropbox.com/s/aspy8j9bxt97hmt/BBSRC_ROI.zip?dl=0", "BBSRC_ROI.zip", mode="wb")
-unzip("BBSRC_ROI.zip", overwrite=T)
+download("https://www.dropbox.com/s/m44c7ylcsn96cxi/BBSRC_samp_grids_500m.zip?dl=0", "BBSRC_samp_grids_500m.zip", mode="wb")
+unzip("BBSRC_samp_grids_500m.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
