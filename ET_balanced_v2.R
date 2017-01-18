@@ -59,7 +59,7 @@ p <- rep(n/N,N)   ## Inclusion probabilities
 # draw sample
 set.seed(6405)                        ## sets reapeatable randomization seed
 Xbal <- cbind(p, mask[,1], mask[,2])  ## specifies balancing variables
-Xspread<- cbind(mask[,1], mask[,2])   ## specifies spreading variables
+Xspread <- cbind(mask[,1], mask[,2])  ## specifies spreading variables
 rsamp <- lcube(p, Xspread, Xbal)      ## samples from population
 
 # extract sample coordinates
@@ -75,16 +75,16 @@ psub<-rep(nsub/Nsub,Nsub)
 # draw subsample
 set.seed(677)                               ## sets reapeatable randomization seed
 Xbalsub <- cbind(psub)                      ## specifies balancing variables
-Xspreadsub<- cbind(x, y)                    ## specifies balancing variables
+Xspreadsub <- cbind(x,y)                    ## specifies balancing variables
 rsampsub <- lcube(psub, Xspreadsub,Xbalsub) ## samples from population
 
 # "close_pair" is a character vector "No" means a single sample site, "Yes" means that a duplicate
 # sample site should be found ~500 m from the first, and the GPS location recorded
-close_pair<-rep("No",n)
+close_pair <- rep("No",n)
 close_pair[rsampsub] <- "Yes"
 
 # plot sample result
-plot(mask[,1],mask[,2],pch=16,cex=0.05)
+plot(mask[,1], mask[,2], pch=16, cex=0.05)
 points(x, y, pch=3, col="red", cex=1)
 points(x[rsampsub], y[rsampsub], pch=16,col="yellow", cex=0.5)
 
