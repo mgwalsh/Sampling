@@ -88,4 +88,7 @@ colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
 write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
+gpx <- SpatialPointsDataFrame(coords=ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string =CRS("+proj=longlat + ellps=WGS84")) 
+writeOGR(gpx, dsn="ET_locs.gpx",
+         dataset_options="GPX_USE_EXTENSIONS = yes", layer = "waypoints", driver = "GPX", overwrite_layer = T)
 																																																																																										
