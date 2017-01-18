@@ -66,7 +66,18 @@ plot(roi)
 points(mask[rsamp,1], mask[rsamp,2], pch=3, col="red", cex=1)
 
 # Write files -------------------------------------------------------------
+# extract sample coordinates
 x <- mask[rsamp,1]
 y <- mask[rsamp,2]
 xy <- data.frame(cbind(x,y))
+
+# project coordinates to longlat
+coordinates(xy) <- ~x+y
+crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
+colnames(ET_locs_LL)[1:2] <- c("Lon", "Lat")
+
+# write files
+write.csv(ET_locs_LL, ET_locs.csv, row.names = F) ## csv file
+
 																																																																																										
