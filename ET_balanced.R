@@ -71,13 +71,21 @@ x <- mask[rsamp,1]
 y <- mask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
+# generate grid / GPS waypoint ID's
+res.pixel <- 1000 ## set GID resolution in meters
+xgid <- ceiling(abs(xy$x)/res.pixel)
+ygid <- ceiling(abs(xy$y)/res.pixel)
+gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
+gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
+GID <- paste(gidx, gidy, sep="-")
+xy <- cbind(xy, GID)
+
 # project coordinates to longlat
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
-colnames(ET_locs_LL)[1:2] <- c("Lon", "Lat")
+colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
-write.csv(ET_locs_LL, ET_locs.csv, row.names = F) ## csv file
-
+write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
 																																																																																										
