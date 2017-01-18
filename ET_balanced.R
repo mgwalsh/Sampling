@@ -57,9 +57,10 @@ n <- 500          ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)   ## Inclusion probabilities
 
 # draw geographically balanced sample
-set.seed(123)                       ## sets reapeatable randomization seed
-X <- cbind(p, mask[,1], mask[,2])   ## specifies population
-rsamp <- cube(p, X)                 ## samples from population
+set.seed(6405)                     ## sets reapeatable randomization seed
+B <- cbind(p, mask[,1], mask[,2])  ## specifies balancing variables
+S <- cbind(mask[,1], mask[,2])     ## specifies spreading variables
+rsamp <- lcube(p, S, B)            ## samples from population
 
 # plot sample result
 plot(roi)
