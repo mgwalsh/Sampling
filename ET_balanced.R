@@ -52,7 +52,7 @@ mask <- rmask[sreg,]
 
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
-N <- nrow(mask)   ## Population size (in 250 m pixels)
+N <- nrow(mask)   ## Population size (in 500 m pixels)
 n <- 500          ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)   ## Inclusion probabilities
 
