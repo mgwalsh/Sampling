@@ -84,12 +84,14 @@ xy <- cbind(xy, GID)
 # project sample coordinates to longlat
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+plot(xy, axes = T)
 ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
 colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
 write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
-gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string =CRS("+proj=longlat + ellps=WGS84")) 
+gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
+plot(gpx, axes = T)
 
 # needs fixing !!!
 # writeOGR(gpx, dsn = "ET_locs.gpx", dataset_options = "GPX_USE_EXTENSIONS = yes",
