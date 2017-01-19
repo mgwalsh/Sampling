@@ -84,7 +84,8 @@ xy <- cbind(xy, GID)
 # project sample coordinates to longlat
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
-plot(xy, axes = T)
+plot(crop(roi, xy))
+plot(xy, add = T)
 ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
 colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
