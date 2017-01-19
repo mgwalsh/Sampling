@@ -84,7 +84,7 @@ xy <- cbind(xy, GID)
 # plot results
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
-plot(crop(roi, xy))         ## plot cropped ROI grid
+plot(crop(roi, extent(xy))) ## plot cropped ROI grid
 plot(xy, col="red", add=T)  ## overlay sample points
 
 # project sample coordinates to longlat
