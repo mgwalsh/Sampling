@@ -26,7 +26,7 @@ cpt <- 0.90 ## set cropland probability threshold (0-1)
 rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x) 
               {return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
-plot(roi)
+plot(roi, axes=F)
 
 # extract ROI coordinates
 coord <- coordinates(roi)
@@ -85,7 +85,7 @@ xy <- cbind(xy, GID)
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 plot(crop(roi, extent(xy))) ## plot cropped ROI grid
-plot(xy, col="red", add=T)  ## overlay sample points
+plot(xy, col="red", add=T, axes=F)  ## overlay sample points
 
 # project sample coordinates to longlat
 ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
