@@ -63,7 +63,7 @@ S <- cbind(mask[,1], mask[,2])    ## specifies spreading variables
 rsamp <- lcube(p, S, B)           ## samples from population
 
 # plot sample result
-plot(roi)
+plot(roi, axes=F)
 points(mask[rsamp,1], mask[rsamp,2], pch=3, col="red", cex=1)
 
 # Write files -------------------------------------------------------------
@@ -84,7 +84,7 @@ xy <- cbind(xy, GID)
 # plot results
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
-plot(crop(roi, extent(xy))) ## plot cropped ROI grid
+plot(crop(roi, extent(xy)), axes=F, legend=F) ## plot cropped ROI grid
 plot(xy, col="red", add=T, axes=F)  ## overlay sample points
 
 # project sample coordinates to longlat
