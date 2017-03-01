@@ -83,6 +83,6 @@ TZ_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
 colnames(TZ_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
-write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
-gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
+write.csv(TZ_locs_LL, "TZ_locs.csv", row.names = F) ## csv file
+gpx <- SpatialPointsDataFrame(coords = TZ_locs_LL[,c(2,3)], data = TZ_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
 plot(gpx, axes=T)
