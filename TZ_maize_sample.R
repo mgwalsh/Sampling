@@ -1,4 +1,4 @@
-#' Geographically balanced sampling setup for Maize system survey in Tanzania
+#' Geographically balanced sampling setup for Maize nutrient survey in Tanzania
 #' M. Walsh, February 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
@@ -15,15 +15,19 @@ dir.create("TZ_sample", showWarnings=F)
 setwd("./TZ_sample")
 
 # Download & stack maize probabilty & distance to "known roads" grids
-download("https://www.dropbox.com/s/holobfn4dpjxsaq/TZ_maize%20samp_grids.zip?dl=0", "TZ_samp_grids.zip", mode="wb")
-unzip("TZ_samp_grids.zip", overwrite=T)
+download("https://www.dropbox.com/s/83qwr9stamkrqfi/TZ_sample_grids.zip?dl=0", "TZ_sample_grids.zip", mode="wb")
+unzip("TZ_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
+# Download MobileSurvey data
+download("https://www.dropbox.com/s/hrbyf6s9o6z7yww/MZ_syst_080117.csv?dl=0", "MZ_syst_080117.csv", mode="wb")
+mob <- read.table("MZ_syst_080117.csv", header=T, sep=",")
+
 # Sample setup ------------------------------------------------------------
-# create a ROI image based on maize cropland probability and distance to nearest known roads
-cpt <- 0.3 ## set maize probability threshold (0-1)
+# create a ROI image based on cropland probability and distance to nearest known roads
+cpt <- 0.8 ## set cropland probability threshold (0-1)
 rdt <- 2.5 ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x){ 
-               return(ifelse(x[2] >= cpt && x[1] > 0 && x[1] <= rdt, 1, 0))})
+               return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
 plot(roi, axes=F, legend=F)
