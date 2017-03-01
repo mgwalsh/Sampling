@@ -39,8 +39,56 @@ colnames(mzp.proj) <- c("x","y") ## laea coordinates
 mzp <- cbind(mzp, mzp.proj) ## bind laea coordinates to mob dataframe
 coordinates(mzp) <- ~x+y ## create spatial points object
 projection(mzp) <- projection(grids) ## set coordinate reference system
-mzpgrd <- extract(roi, mzp) ## extract gridded roi indicator @ point locations
-mzpgrd <- as.data.frame(mzpgrd) ## convert back to a dataframe
-mzp <- cbind.data.frame(mzp, mzpgrd) ## bind points with roi indicator in a dataframe
-mzp <- unique(na.omit(mzp)) ## dataframe includes only unique & complete records of maize locations
+mzproi <- extract(roi, mzp) ## extract gridded roi indicator @ point locations
+mzproi <- as.data.frame(mzproi) ## convert back to a dataframe
+mzp <- cbind.data.frame(mzp, mzproi) ## bind points with roi indicator in a dataframe
+mzp <- unique(na.omit(mzp)) ## dataframe includes only unique & complete records
+mzp <- mzp[which(mzp$mzproi==1),] ## select maize locations within roi
+
+# Geographically balanced sampling ----------------------------------------
+# set sampling parameters
+N <- nrow(mzp)  ## Population size
+n <- 1000       ## Set sample size (number of sampling locations)
+p <- rep(n/N,N) ## Inclusion probabilities
+
+# draw geographically balanced sample
+set.seed(6405)                    ## sets reapeatable randomization seed
+B <- cbind(p, mzp[,9], mzp[,10])  ## specifies balancing variables
+S <- cbind(mzp[,9], mzp[,10])     ## specifies spreading variables
+rsamp <- lcube(p, S, B)           ## samples from population
+
+# plot sample result
+plot(roi, axes=F, legend=F)
+points(mzp[rsamp,9], mzp[rsamp,10], pch=3, col="red", cex=1)
+
+# Write files -------------------------------------------------------------
+# extract sample coordinates
+x <- mzp[rsamp,9]
+y <- mzp[rsamp,10]
+xy <- data.frame(cbind(x,y))
+
+# generate grid / GPS waypoint ID's
+res.pixel <- 1000 ## set GID resolution in meters
+xgid <- ceiling(abs(xy$x)/res.pixel)
+ygid <- ceiling(abs(xy$y)/res.pixel)
+gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
+gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
+GID <- paste(gidx, gidy, sep="-")
+xy <- cbind(xy, GID)
+
+# plot results
+coordinates(xy) <- ~x+y
+crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+plot(crop(roi, extent(xy)), axes=F, legend=F) ## plot cropped ROI grid
+plot(xy, col="red", add=T, axes=F)  ## overlay sample points
+
+# project sample coordinates to longlat
+ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
+colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
+
+# write files
+write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
+gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
+plot(gpx, axes = T)
+
 
