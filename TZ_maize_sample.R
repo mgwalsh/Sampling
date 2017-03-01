@@ -1,4 +1,4 @@
-#' Geographically balanced sampling setup for soil-plant-livestock nutrient survey in Tanzania
+#' Geographically balanced sampling for soil-plant-livestock nutrient survey in Tanzania
 #' M. Walsh, February 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
