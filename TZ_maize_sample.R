@@ -1,4 +1,4 @@
-#' Geographically balanced sampling setup for maize nutrient survey in Tanzania
+#' Geographically balanced sampling setup for soil-plant-livestock nutrient survey in Tanzania
 #' M. Walsh, February 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
@@ -76,19 +76,13 @@ gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
 GID <- paste(gidx, gidy, sep="-")
 xy <- cbind(xy, GID)
 
-# plot results
+# project sample coordinates to longlat
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
-plot(crop(roi, extent(xy)), axes=F, legend=F) ## plot cropped ROI grid
-plot(xy, col="red", add=T, axes=F)  ## overlay sample points
-
-# project sample coordinates to longlat
-ET_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
-colnames(ET_locs_LL)[1:3] <- c("GID","Lon","Lat")
+TZ_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
+colnames(TZ_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
 write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
 gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
-plot(gpx, axes = T)
-
-
+plot(gpx, axes=T)
