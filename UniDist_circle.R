@@ -1,4 +1,4 @@
-# Uniform  point distribution in a circle of a given area
+# Uniform point distribution in a circle of a given area
 
 area <- 100 # area in square meters
 n <- 10000
