@@ -1,7 +1,7 @@
 # Uniform distribution in a circle of a given area
 
 area <- 100 # area in square meters
-n <- 1000
+n <- 10000
 r <- sqrt(runif(n))*sqrt(area/pi)
 t <- runif(n, 0, 2*pi)
 x <- r * cos(t)
