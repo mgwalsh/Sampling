@@ -8,4 +8,4 @@ t <- runif(n, 0, 2*pi) # random angle
 x <- r * cos(t) # x coordinate
 y <- r * sin(t) # y coordinate
 par(pty="s")
-plot(x, y, pch=3, cex=0.6)
+plot(x, y, pch=3, cex=0.4)
