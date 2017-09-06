@@ -12,7 +12,7 @@ dir.create("GID", showWarnings=F)
 dat_dir <- "./GID"
 
 # download GeoSurvey sample data
-download("https://www.dropbox.com/s/4auvcjz3te4pic3/Luvilukuny_GS_vars.csv?dl=0", "./GID/Luvilukuny_GS_vars.csv", mode="wb")
+download("https://www.dropbox.com/s/4auvcjz3te4pic3/Luvilukuny_GS_vars.csv?raw=1", "./GID/Luvilukuny_GS_vars.csv", mode="wb")
 geosv <- read.table(paste(dat_dir, "/Luvilukuny_GS_vars.csv", sep=""), header=T, sep=",")
 
 #+ Data setup --------------------------------------------------------------
