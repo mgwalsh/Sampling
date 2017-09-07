@@ -21,5 +21,10 @@ samp <- read.table("Soil_sample_2017_09_06.csv", header=T, sep=",")
 samp$lat <- as.numeric(as.character(samp$lat))
 samp$lon <- as.numeric(as.character(samp$lon))
 samp <- samp[samp$lat < 0,]
+samp <- na.omit(samp)
 
-test <- from_position(key = "TE2QLEOP", positions = c(6.385336,-36.293769))
+test <- samp[1,]
+ll <- c("lat","lon")
+ll <- test[ll]
+w3w <- from_position(key = "TE2QLEOP", positions = c(ll$lat, ll$lon))
+
