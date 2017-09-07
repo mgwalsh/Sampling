@@ -30,3 +30,7 @@ for(i in 1:dim(samp)[1]){
   w3w[i,] <- from_position(key = "TE2QLEOP", positions = c(samp[i,"lat"], samp[i,"lon"]))$words
   print(w3w[i,])
 }
+
+# Write output file -------------------------------------------------------
+samp <- cbind(samp, w3w)
+write.csv(samp, "Soil_sample_w3w.csv", row.names = F)
