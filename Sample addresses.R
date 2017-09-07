@@ -2,7 +2,7 @@
 # M. Walsh, September 2017
 
 # obtain a what3words API key @ https://accounts.what3words.com
-# install.packages(c("downloader","threewords")), dependencies=TRUE)
+# install.packages(c("downloader","threewords"), dependencies=TRUE)
 require(downloader)
 require(threewords)
 
@@ -22,9 +22,9 @@ samp$lat <- as.numeric(as.character(samp$lat))
 samp$lon <- as.numeric(as.character(samp$lon))
 samp <- samp[samp$lat < 0,]
 samp <- na.omit(samp)
-
-test <- samp[1,]
-ll <- c("lat","lon")
-ll <- test[ll]
-w3w <- from_position(key = "TE2QLEOP", positions = c(ll$lat, ll$lon))
-
+w3w <- matrix(NA, dim(samp)[1], 3)
+for(i in 1:dim(samp)[1]){ 
+  # TODO: Slow. Could be vectorized in larger batches.
+  w3w[i,] <- from_position(key = "TE2QLEOP", positions = c(samp[i,"lat"], samp[i,"lon"]))$words
+  print(w3w[i,])
+}
