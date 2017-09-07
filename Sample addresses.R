@@ -1,4 +1,4 @@
-# TZ what3words soil sample address geocoding
+# TZ what3words resolution sensitive soil sample address geocoding
 # M. Walsh, W. Wu & J. Chen, September 2017
 
 # obtain a what3words API key @ https://accounts.what3words.com
