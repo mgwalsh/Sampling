@@ -39,7 +39,7 @@ ly <- ceiling(samp$y/res.pixel)*res.pixel
 # project to longlat
 ll <- project(cbind(lx, ly), "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs", inv=TRUE)
 
-# What3Words --------------------------------------------------------------
+# what3words --------------------------------------------------------------
 # quite slow for this big file but you can always <esc>
 w3w <- matrix(NA, dim(ll)[1], 3)
 for(i in 1:dim(ll)[1]){ 
