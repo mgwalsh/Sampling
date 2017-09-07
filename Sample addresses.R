@@ -1,5 +1,5 @@
 # TZ what3words soil sample address geocoding
-# W. Wu, J. Chen & M. Walsh, September 2017
+# W.Wu, J.Chen & M.Walsh, September 2017
 
 # obtain a what3words API key @ https://accounts.what3words.com
 # install.packages(c("downloader","threewords"), dependencies=TRUE)
@@ -24,6 +24,7 @@ samp <- samp[samp$lat < 0,]
 samp <- na.omit(samp)
 
 # What3Words test ---------------------------------------------------------
+# very slow for this big file but you can always <esc>
 w3w <- matrix(NA, dim(samp)[1], 3)
 for(i in 1:dim(samp)[1]){ 
   w3w[i,] <- from_position(key = "TE2QLEOP", positions = c(samp[i,"lat"], samp[i,"lon"]))$words
