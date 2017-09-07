@@ -23,13 +23,14 @@ samp$lon <- as.numeric(as.character(samp$lon))
 samp <- samp[samp$lat < 0,]
 samp <- na.omit(samp)
 
-# What3Words test ---------------------------------------------------------
+# What3Words --------------------------------------------------------------
 # very slow for this big file but you can always <esc>
 w3w <- matrix(NA, dim(samp)[1], 3)
 for(i in 1:dim(samp)[1]){ 
   w3w[i,] <- from_position(key = "TE2QLEOP", positions = c(samp[i,"lat"], samp[i,"lon"]))$words
   print(w3w[i,])
 }
+colnames(w3w) <- c("w1","w2","w3")
 
 # Write output file -------------------------------------------------------
 samp <- cbind(samp, w3w)
