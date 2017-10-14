@@ -87,7 +87,7 @@ close_pair[rsampsub] <- "Yes"
 # plot sample result
 plot(mask[,1], mask[,2], pch=16, cex=0.05)
 points(x, y, pch=3, col="red", cex=1)
-points(x[rsampsub], y[rsampsub], pch=16,col="yellow", cex=0.5)
+points(x[rsampsub], y[rsampsub], pch=16, col="yellow", cex=0.5)
 
 # Write files -------------------------------------------------------------
 # generate grid / GPS waypoint ID's
