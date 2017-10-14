@@ -1,6 +1,6 @@
-#' Geographically balanced sampling setup for GeoNutrition survey in Ethiopia
-#' with subsample relative to primary points
-#' M. Lark & M. Walsh, January 2017
+# Geographically balanced sampling setup for GeoNutrition survey in Ethiopia
+# with subsample relative to primary points
+# M. Lark & M. Walsh, January 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
 suppressPackageStartupMessages({
