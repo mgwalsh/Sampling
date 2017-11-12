@@ -73,4 +73,4 @@ colnames(NG_locs_LL)[1:3] <- c("GID","Lon","Lat")
 # write files
 write.csv(NG_locs_LL, "NG_locs.csv", row.names = F) ## csv file
 gpx <- SpatialPointsDataFrame(coords = NG_locs_LL[,c(2,3)], data = NG_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
-plot(gpx, axes = T)
+plot(gpx, axes = T, cex=0.3)
