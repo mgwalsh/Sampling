@@ -22,7 +22,7 @@ grids <- stack(glist)
 
 # Sample setup ------------------------------------------------------------
 # create a ROI image based on cropland probability and distance to nearest known roads
-cpt <- 1    ## set cropland probability threshold (0-1)
+cpt <- 1    ## set cropland mask threshold (0-1)
 rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x) 
 {return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
@@ -37,7 +37,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
+n <- round(N/8*0.025,0) ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## Inclusion probabilities
 
 # draw geographically balanced sample
