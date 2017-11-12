@@ -26,7 +26,7 @@ cpt <- 1    ## set cropland mask threshold (0-1)
 rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x) 
 {return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
-plot(roi, axes=F)
+plot(roi, axes=F, legend=F)
 
 # extract ROI coordinates
 coord <- coordinates(roi)
@@ -46,8 +46,8 @@ B <- cbind(p, rmask[,1], rmask[,2]) ## specifies balancing variables
 rsamp <- cube(p, B)                 ## samples from population
 
 # plot sample result
-plot(roi, axes=F)
-points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=1)
+plot(roi, axes=F, legend=F)
+points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.3)
 
 # Write files -------------------------------------------------------------
 # extract sample coordinates
