@@ -1,5 +1,5 @@
 # Geographically balanced sampling setup for MobileSurvey survey in Kebbie State, Nigeria
-# M. Walsh, October 2017
+# M. Walsh, November 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
 suppressPackageStartupMessages({
@@ -37,7 +37,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- round(N/8*0.05,0) ## Set sample size (number of sampling locations)
+n <- round(N/8*0.025,0) ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## Inclusion probabilities
 
 # draw geographically balanced sample
@@ -73,5 +73,3 @@ colnames(KB_locs_LL)[1:3] <- c("GID","Lon","Lat")
 write.csv(KB_locs_LL, "KB_locs.csv", row.names = F) ## csv file
 gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
 plot(gpx, axes = T)
-
-
