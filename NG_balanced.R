@@ -56,7 +56,7 @@ y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
 # generate grid block ID's
-res.pixel <- 10000 ## set GID resolution in meters
+res.pixel <- 100000 ## set GID resolution in meters
 xgid <- ceiling(abs(xy$x)/res.pixel)
 ygid <- ceiling(abs(xy$y)/res.pixel)
 gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
