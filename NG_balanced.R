@@ -37,7 +37,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- N/8*0.05    ## Set sample size (number of sampling locations)
+n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## Inclusion probabilities
 
 # draw geographically balanced sample
@@ -45,3 +45,32 @@ set.seed(6405)                      ## sets reapeatable randomization seed
 B <- cbind(p, rmask[,1], rmask[,2]) ## specifies balancing variables
 S <- cbind(rmask[,1], rmask[,2])    ## specifies spreading variables
 rsamp <- lcube(p, S, B)             ## samples from population
+
+# plot sample result
+plot(roi, axes=F)
+points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=1)
+
+# Write files -------------------------------------------------------------
+# extract sample coordinates
+x <- rmask[rsamp,1]
+y <- rmask[rsamp,2]
+xy <- data.frame(cbind(x,y))
+
+# generate grid / GPS waypoint ID's
+res.pixel <- 1000 ## set GID resolution in meters
+xgid <- ceiling(abs(xy$x)/res.pixel)
+ygid <- ceiling(abs(xy$y)/res.pixel)
+gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
+gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
+GID <- paste(gidx, gidy, sep="-")
+xy <- cbind(xy, GID)
+
+# project sample coordinates to longlat
+NG_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
+colnames(NG_locs_LL)[1:3] <- c("GID","Lon","Lat")
+
+# write files
+write.csv(NG_locs_LL, "NG_locs.csv", row.names = F) ## csv file
+gpx <- SpatialPointsDataFrame(coords = NG_locs_LL[,c(2,3)], data = NG_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
+plot(gpx, axes = T)
+
