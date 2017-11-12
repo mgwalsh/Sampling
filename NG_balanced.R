@@ -37,7 +37,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- round(N/8*0.025,0) ## Set sample size (number of sampling locations)
+n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## Inclusion probabilities
 
 # draw geographically balanced sample
