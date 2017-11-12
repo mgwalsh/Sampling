@@ -71,5 +71,5 @@ colnames(KB_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
 # write files
 write.csv(KB_locs_LL, "KB_locs.csv", row.names = F) ## csv file
-gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
+gpx <- SpatialPointsDataFrame(coords = KB_locs_LL[,c(2,3)], data = KB_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
 plot(gpx, axes = T)
