@@ -1,5 +1,5 @@
 # Geographically balanced sampling setup for MobileSurvey survey in Nigeria
-# M. Walsh, October 2017
+# M. Walsh, November 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
 suppressPackageStartupMessages({
@@ -55,8 +55,8 @@ x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
-# generate grid / GPS waypoint ID's
-res.pixel <- 1000 ## set GID resolution in meters
+# generate grid block ID's
+res.pixel <- 10000 ## set GID resolution in meters
 xgid <- ceiling(abs(xy$x)/res.pixel)
 ygid <- ceiling(abs(xy$y)/res.pixel)
 gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
