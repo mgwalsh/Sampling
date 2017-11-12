@@ -41,10 +41,9 @@ n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## Inclusion probabilities
 
 # draw geographically balanced sample
-set.seed(6405)                      ## sets reapeatable randomization seed
+set.seed(6405)                      ## sets repeatable randomization seed
 B <- cbind(p, rmask[,1], rmask[,2]) ## specifies balancing variables
-S <- cbind(rmask[,1], rmask[,2])    ## specifies spreading variables
-rsamp <- lcube(p, S, B)             ## samples from population
+rsamp <- cube(p, B)                 ## samples from population
 
 # plot sample result
 plot(roi, axes=F)
@@ -66,6 +65,8 @@ GID <- paste(gidx, gidy, sep="-")
 xy <- cbind(xy, GID)
 
 # project sample coordinates to longlat
+coordinates(xy) <- ~x+y
+crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 NG_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
 colnames(NG_locs_LL)[1:3] <- c("GID","Lon","Lat")
 
