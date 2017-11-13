@@ -67,9 +67,8 @@ crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 sloc <- spTransform(xy, CRS(proj4string(shape)))
 gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
-samp <- cbind(gadm[, c(5,7)], sloc)
+samp <- cbind(gadm[ ,c(5,7)], sloc)
 colnames(samp) <- c("State", "LGA", "Lon", "Lat")
 
 # Write file --------------------------------------------------------------
 write.csv(samp, "NG_sample.csv", row.names = F)
-
