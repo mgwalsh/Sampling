@@ -6,19 +6,25 @@ suppressPackageStartupMessages({
   require(downloader)
   require(rgdal)
   require(raster)
+  require(sp)
   require(BalancedSampling)
 })
 
 # Data setup --------------------------------------------------------------
-# Create a data folder in your current working directory
+# create a data folder in your current working directory
 dir.create("NG_sample", showWarnings=F)
 setwd("./NG_sample")
 
-# Download & stack cropland probabilty & distance to "known roads" grids
+# download & stack cropland probabilty & distance to "known roads" grids
 download("https://www.dropbox.com/s/zitu29lxkf6y64l/NG_sample_grids.zip?raw=1", "NG_sample_grids.zip", mode="wb")
 unzip("NG_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
+
+# download GADM-L2 shapefile (courtesy: http://www.gadm.org)
+download("https://www.dropbox.com/s/y3h6l7yu00orm78/NGA_adm2.zip?raw=1", "NGA_adm2.zip", mode="wb")
+unzip("NGA_adm2.zip", overwrite=T)
+shape <- shapefile("NGA_adm2.shp")
 
 # Sample setup ------------------------------------------------------------
 # create a ROI image based on cropland probability and distance to nearest known roads
@@ -55,22 +61,15 @@ x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
-# generate grid block ID's
-res.pixel <- 100000 ## set GID resolution in meters
-xgid <- ceiling(abs(xy$x)/res.pixel)
-ygid <- ceiling(abs(xy$y)/res.pixel)
-gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
-gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
-GID <- paste(gidx, gidy, sep="-")
-xy <- cbind(xy, GID)
-
-# project sample coordinates to longlat
+# attach State & LGA names
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
-NG_locs_LL <- as.data.frame(spTransform(xy, CRS("+proj=longlat +datum=WGS84")))
-colnames(NG_locs_LL)[1:3] <- c("GID","Lon","Lat")
+sloc <- spTransform(xy, CRS(proj4string(shape)))
+gadm <- sloc %over% shape
+sloc <- as.data.frame(sloc)
+samp <- cbind(gadm[, c(5,7)], sloc)
+colnames(samp) <- c("State", "LGA", "Lon", "Lat")
 
-# write files
-write.csv(NG_locs_LL, "NG_locs.csv", row.names = F) ## csv file
-gpx <- SpatialPointsDataFrame(coords = NG_locs_LL[,c(2,3)], data = NG_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
-plot(gpx, axes = T, cex=0.3)
+# Write file --------------------------------------------------------------
+write.csv(samp, "NG_sample.csv", row.names = F)
+
