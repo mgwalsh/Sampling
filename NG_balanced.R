@@ -1,4 +1,4 @@
-# Geographically balanced sampling setup for MobileSurvey survey in Nigeria
+# Geographically balanced sampling setup for MobileSurvey in Nigeria
 # M. Walsh, November 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
 dir.create("NG_sample", showWarnings=F)
 setwd("./NG_sample")
 
-# download & stack cropland probabilty & distance to "known roads" grids
+# download & stack cropland probability/mask & distance to "known roads" grids
 download("https://www.dropbox.com/s/zitu29lxkf6y64l/NG_sample_grids.zip?raw=1", "NG_sample_grids.zip", mode="wb")
 unzip("NG_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
@@ -42,9 +42,9 @@ rmask <- index[which(index$index == 1),]
 
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
-N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
-p <- rep(n/N,N)  ## Inclusion probabilities
+N <- nrow(rmask) ## population size (in 250 m pixels)
+n <- round(N/8*0.01,0) ## set sample size (number of sampling locations)
+p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
 set.seed(6405)                      ## sets repeatable randomization seed
