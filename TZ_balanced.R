@@ -15,19 +15,19 @@ suppressPackageStartupMessages({
 dir.create("TZ_sample", showWarnings=F)
 setwd("./TZ_sample")
 
-# download & stack cropland probabilty & distance to "known roads" grids
+# download & stack cropland probability/mask & distance to "known roads" grids
 download("https://www.dropbox.com/s/83qwr9stamkrqfi/TZ_sample_grids.zip?raw=1", "TZ_sample_grids.zip", mode="wb")
 unzip("TZ_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
-# download GADM-L2 shapefile (courtesy: http://www.gadm.org)
+# download GADM-L3 shapefile (courtesy: http://www.gadm.org)
 download("https://www.dropbox.com/s/bhefsc8u120uqwp/TZA_adm3.zip?raw=1", "TZA_adm3.zip", mode="wb")
 unzip("TZA_adm3.zip", overwrite=T)
 shape <- shapefile("TZA_adm3.shp")
 
 # Sample setup ------------------------------------------------------------
-# create a ROI image based on cropland probability and distance to nearest known roads
+# create a ROI image based on cropland probability/mask and distance to nearest known roads
 cpt <- 1    ## set cropland mask threshold (0-1)
 rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x) 
@@ -42,9 +42,9 @@ rmask <- index[which(index$index == 1),]
 
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
-N <- nrow(rmask) ## Population size (in 250 m pixels)
-n <- round(N/8*0.01,0) ## Set sample size (number of sampling locations)
-p <- rep(n/N,N)  ## Inclusion probabilities
+N <- nrow(rmask) ## population size (in 250 m pixels)
+n <- round(N/8*0.01,0) ## set sample size (number of sampling locations)
+p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
 set.seed(6405)                      ## sets repeatable randomization seed
@@ -61,7 +61,7 @@ x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
-# attach GADM-L3 and above unit names
+# attach GADM-L3 and above unit names from shape
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 sloc <- spTransform(xy, CRS(proj4string(shape)))
