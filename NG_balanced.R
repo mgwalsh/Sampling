@@ -52,7 +52,7 @@ B <- cbind(p, rmask[,1], rmask[,2]) ## specifies balancing variables
 rsamp <- cube(p, B)                 ## samples from population
 
 # plot sample result
-plot(roi, axes=F, legend=F)
+plot(grids$NG_CP_mask, axes=F, legend=F)
 points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.3)
 
 # Write files -------------------------------------------------------------
