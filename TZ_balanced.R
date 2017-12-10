@@ -27,9 +27,9 @@ unzip("TZA_adm3.zip", overwrite=T)
 shape <- shapefile("TZA_adm3.shp")
 
 # Sample setup ------------------------------------------------------------
-# create a ROI image based on cropland probability/mask and distance to nearest known roads
+# create a ROI image based on cropland mask and distance to nearest main roads
 cpt <- 1    ## set cropland mask threshold (0-1)
-rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
+rdt <- 5  ## set maximum distance to the nearest "known road" (in km)
 roi <- overlay(grids, fun=function(x) 
 {return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
 plot(roi, axes=F, legend=F)
@@ -72,3 +72,16 @@ colnames(samp) <- c("Region", "District", "Ward", "Lon", "Lat")
 
 # Write file --------------------------------------------------------------
 write.csv(samp, "TZ_sample.csv", row.names = F)
+
+# Sampling map widget -----------------------------------------------------
+require(leaflet)
+require(htmlwidgets)
+
+# render map
+w <- leaflet() %>% 
+  addTiles() %>% # default basemap: OSM
+  addCircleMarkers(sloc$x, sloc$y, clusterOptions = markerClusterOptions())
+w ## plot widget 
+
+# save widget
+saveWidget(w, 'TZ_sample.html', selfcontained = F)
