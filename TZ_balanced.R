@@ -79,7 +79,7 @@ require(htmlwidgets)
 
 # render map
 w <- leaflet() %>% 
-  addTiles() %>% # default basemap: OSM
+  addProviderTiles(providers$OpenStreetMap.HOT) %>%
   addCircleMarkers(sloc$x, sloc$y, clusterOptions = markerClusterOptions())
 w ## plot widget 
 
