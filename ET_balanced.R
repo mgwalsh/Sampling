@@ -1,5 +1,5 @@
-#' Geographically balanced sampling setup for GeoNutrition survey in Ethiopia
-#' M. Lark & M. Walsh, January 2017
+# Geographically balanced sampling setup for GeoNutrition survey in Ethiopia
+# M. Lark & M. Walsh, January 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
 suppressPackageStartupMessages({
@@ -106,5 +106,4 @@ w <- leaflet() %>%
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'TZ_sample.html', selfcontained = F)
-
+saveWidget(w, 'BBSRC_sample.html', selfcontained = F)
