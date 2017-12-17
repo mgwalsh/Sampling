@@ -1,7 +1,7 @@
-# Geographically balanced sampling setup for GeoNutrition survey in Ethiopia
+# Spatially balanced sampling setup for GeoNutrition survey in Ethiopia
 # M. Lark & M. Walsh, January 2017
 
-# install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
+# install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets), dependencies=T)
 suppressPackageStartupMessages({
   require(downloader)
   require(rgdal)
