@@ -8,6 +8,8 @@ suppressPackageStartupMessages({
   require(raster)
   require(sp)
   require(BalancedSampling)
+  require(leaflet)
+  require(htmlwidgets)
 })
 
 # Data setup --------------------------------------------------------------
@@ -74,12 +76,9 @@ colnames(samp) <- c("Region", "District", "Ward", "Lon", "Lat")
 write.csv(samp, "TZ_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
-require(leaflet)
-require(htmlwidgets)
-
 # render map
 w <- leaflet() %>% 
-  addProviderTiles(providers$OpenStreetMap.HOT) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
   addCircleMarkers(sloc$x, sloc$y, clusterOptions = markerClusterOptions())
 w ## plot widget 
 
