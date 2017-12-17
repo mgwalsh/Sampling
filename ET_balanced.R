@@ -7,6 +7,8 @@ suppressPackageStartupMessages({
   require(rgdal)
   require(raster)
   require(BalancedSampling)
+  require(leaflet)
+  require(htmlwidgets)
 })
 
 # Data setup --------------------------------------------------------------
@@ -96,7 +98,13 @@ write.csv(ET_locs_LL, "ET_locs.csv", row.names = F) ## csv file
 gpx <- SpatialPointsDataFrame(coords = ET_locs_LL[,c(2,3)], data = ET_locs_LL, proj4string = CRS("+proj=longlat + ellps=WGS84")) 
 plot(gpx, axes = T)
 
-# needs fixing !!!
-# writeOGR(gpx, dsn = "ET_locs.gpx", dataset_options = "GPX_USE_EXTENSIONS = yes",
-#         layer = "waypoints", driver = "GPX", overwrite_layer = T) ## GPX file
-																																																																																										
+# Sampling map widget -----------------------------------------------------
+# render map
+w <- leaflet() %>% 
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
+  addCircleMarkers(ET_locs_LL$Lon, ET_locs_LL$Lat, clusterOptions = markerClusterOptions())
+w ## plot widget 
+
+# save widget
+saveWidget(w, 'TZ_sample.html', selfcontained = F)
+
