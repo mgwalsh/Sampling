@@ -106,4 +106,4 @@ w <- leaflet() %>%
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'BBSRC_sample.html', selfcontained = F)
+saveWidget(w, 'BBSRC_sample.html', selfcontained = T)
