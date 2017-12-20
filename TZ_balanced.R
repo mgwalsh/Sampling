@@ -1,7 +1,7 @@
-# Geographically balanced sampling setup for MobileSurvey in Tanzania
+# Spatially balanced sampling setup for MobileSurvey in Tanzania
 # M. Walsh, November 2017
 
-# install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
+# install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets"), dependencies=T)
 suppressPackageStartupMessages({
   require(downloader)
   require(rgdal)
@@ -71,8 +71,6 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(5,7,9)], sloc)
 colnames(samp) <- c("Region", "District", "Ward", "Lon", "Lat")
-
-# Write file --------------------------------------------------------------
 write.csv(samp, "TZ_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
