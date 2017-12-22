@@ -77,7 +77,7 @@ write.csv(samp, "TZ_sample.csv", row.names = F)
 # render map
 w <- leaflet() %>% 
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
-  addCircleMarkers(sloc$x, sloc$y, clusterOptions = markerClusterOptions())
+  addCircleMarkers(samp$Lon, samp$Lat, clusterOptions = markerClusterOptions())
 w ## plot widget 
 
 # save widget
