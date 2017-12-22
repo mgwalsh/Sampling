@@ -17,7 +17,7 @@ suppressPackageStartupMessages({
 dir.create("TZ_sample", showWarnings=F)
 setwd("./TZ_sample")
 
-# download & stack cropland probability/mask & distance to "known roads" grids
+# download & stack cropland probability/mask & distance to "major roads" grids
 download("https://www.dropbox.com/s/83qwr9stamkrqfi/TZ_sample_grids.zip?raw=1", "TZ_sample_grids.zip", mode="wb")
 unzip("TZ_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
