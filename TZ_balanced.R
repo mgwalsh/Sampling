@@ -30,8 +30,8 @@ shape <- shapefile("TZA_adm3.shp")
 
 # Sample setup ------------------------------------------------------------
 # create a ROI image based on cropland mask and distance to nearest main roads
-cpt <- 1    ## set cropland mask threshold (0-1)
-rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
+cpt <- 1    ## set cropland mask to 1
+rdt <- 2.5  ## set maximum distance to the nearest "major road" (in km)
 roi <- overlay(grids, fun=function(x) 
 {return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
 plot(roi, axes=F, legend=F)
