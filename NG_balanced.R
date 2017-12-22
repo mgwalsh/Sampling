@@ -1,4 +1,4 @@
-# Geographically balanced sampling setup for MobileSurvey in Nigeria
+# Spatially balanced sampling setup for MobileSurvey in Nigeria
 # M. Walsh, November 2017
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling"), dependencies=T)
@@ -8,6 +8,8 @@ suppressPackageStartupMessages({
   require(raster)
   require(sp)
   require(BalancedSampling)
+  require(leaflet)
+  require(htmlwidgets)
 })
 
 # Data setup --------------------------------------------------------------
@@ -15,7 +17,7 @@ suppressPackageStartupMessages({
 dir.create("NG_sample", showWarnings=F)
 setwd("./NG_sample")
 
-# download & stack cropland probability/mask & distance to "known roads" grids
+# download & stack cropland probability/mask & distance to "major roads" grids
 download("https://www.dropbox.com/s/zitu29lxkf6y64l/NG_sample_grids.zip?raw=1", "NG_sample_grids.zip", mode="wb")
 unzip("NG_sample_grids.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
@@ -28,10 +30,10 @@ shape <- shapefile("NGA_adm2.shp")
 
 # Sample setup ------------------------------------------------------------
 # create a ROI image based on cropland probability and distance to nearest known roads
-cpt <- 1    ## set cropland mask threshold (0-1)
-rdt <- 2.5  ## set maximum distance to the nearest "known road" (in km)
+cpt <- 1    ## set cropland mask to 1
+rdt <- 2.5  ## set maximum distance to the nearest "major road" (in km)
 roi <- overlay(grids, fun=function(x) 
-{return(ifelse(x[1] >= cpt && x[2] > 0 && x[2] <= rdt, 1, 0))})
+{return(ifelse(x[2] >= cpt && x[1] > 0 && x[1] <= rdt, 1, 0))})
 plot(roi, axes=F, legend=F)
 
 # extract ROI coordinates
@@ -69,6 +71,14 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(5,7)], sloc)
 colnames(samp) <- c("State", "LGA", "Lon", "Lat")
-
-# Write file --------------------------------------------------------------
 write.csv(samp, "NG_sample.csv", row.names = F)
+
+# Sampling map widget -----------------------------------------------------
+# render map
+w <- leaflet() %>% 
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
+  addCircleMarkers(samp$Lon, samp$Lat, clusterOptions = markerClusterOptions())
+w ## plot widget 
+
+# save widget
+saveWidget(w, 'NG_sample.html', selfcontained = T)
