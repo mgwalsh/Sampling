@@ -80,4 +80,4 @@ w <- leaflet() %>%
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'TZ_sample.html', selfcontained = T)
+saveWidget(w, 'TZ_GS_sample.html', selfcontained = T)
