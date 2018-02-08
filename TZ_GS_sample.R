@@ -70,7 +70,7 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(5,7,9)], sloc)
 colnames(samp) <- c("Region", "District", "Ward", "Lon", "Lat")
-write.csv(samp, "TZ_sample.csv", row.names = F)
+write.csv(samp, "TZ_GS_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
 # render map
