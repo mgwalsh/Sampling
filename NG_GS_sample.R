@@ -61,22 +61,22 @@ x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
-# attach GADM-L3 and above unit names from shape
+# attach GADM-L2 and above unit names from shape
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 sloc <- spTransform(xy, CRS(proj4string(shape)))
 gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
-samp <- cbind(gadm[ ,c(5,7,9)], sloc)
-colnames(samp) <- c("Region", "District", "Ward", "Lon", "Lat")
+samp <- cbind(gadm[ ,c(5,7)], sloc)
+colnames(samp) <- c("region", "lga", "lon", "lat")
 write.csv(samp, "NG_GS_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
 # render map
 w <- leaflet() %>% 
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
-  addCircleMarkers(samp$Lon, samp$Lat, clusterOptions = markerClusterOptions())
+  addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'TZ_GS_sample.html', selfcontained = T)
+saveWidget(w, 'NG_GS_sample.html', selfcontained = T)
