@@ -1,5 +1,5 @@
 # Spatially balanced sampling setup for cropland GeoSurvey of Ethiopia
-# M. Walsh, February 2018
+# M. Walsh, May 2018
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets"), dependencies=T)
 suppressPackageStartupMessages({
