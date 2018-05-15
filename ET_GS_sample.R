@@ -78,6 +78,4 @@ w <- leaflet() %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
   addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
 w ## plot widget 
-
-# save widget
-saveWidget(w, 'TZ_GS_sample.html', selfcontained = T)
+saveWidget(w, 'ET_GS18_sample.html', selfcontained = T)
