@@ -29,7 +29,7 @@ glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
 # Sample setup ------------------------------------------------------------
-# create a ROI image based on cropland mask
+# create a ROI image based on ROI mask
 cpt <- 1    ## set land mask to 1
 roi <- overlay(grids, fun=function(x) {return(ifelse(x[1] >= cpt, 1, 0))})
 plot(roi, axes=F, legend=F)
@@ -67,9 +67,9 @@ crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 sloc <- spTransform(xy, CRS(proj4string(shape)))
 gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
-samp <- cbind(gadm[ ,c(5,7)], sloc)
-colnames(samp) <- c("L1", "L2", "lon", "lat")
-write.csv(samp, "GH_GS_sample.csv", row.names = F)
+samp <- cbind(gadm[ ,c(4,7)], sloc)
+colnames(samp) <- c("region", "territory", "lon", "lat")
+write.csv(samp, "DRC_GS_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
 # render map
@@ -79,4 +79,4 @@ w <- leaflet() %>%
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'GH_GS_sample.html', selfcontained = T)
+saveWidget(w, 'DRC_GS_sample.html', selfcontained = T)
