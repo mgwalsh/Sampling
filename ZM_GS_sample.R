@@ -20,16 +20,15 @@ setwd("./ZM_GS_sample")
 # download GADM-L2 shapefile (courtesy: http://www.gadm.org)
 download("https://www.dropbox.com/s/3x870g2n5cjge16/ZM_GADM_L2.zip?raw=1", "ZM_GADM_L2.zip", mode="wb")
 unzip("ZM_GADM_L2.zip", overwrite=T)
-shape <- shapefile("ZM_adm2.shp")
+shape <- shapefile("gadm36_ZMB_2.shp")
 
 # download land mask
-download("https://www.dropbox.com/s/1cg5j7xt9y3k7b0/ZMB_GS_mask.tif.zip?raw=1", "ZMB_GS_mask.tif.zip", mode="wb")
-unzip("ZMB_GS_mask.tif.zip", overwrite=T)
+download("https://www.dropbox.com/s/69t4xk0vu6kiwzs/ZMB_GS_mask.tif?raw=1", "ZMB_GS_mask.tif", mode="wb")
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
 # Sample setup ------------------------------------------------------------
-# create a ROI image based on cropland mask
+# create a ROI image
 cpt <- 1    ## set land mask to 1
 roi <- overlay(grids, fun=function(x) {return(ifelse(x[1] >= cpt, 1, 0))})
 plot(roi, axes=F, legend=F)
@@ -43,7 +42,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## population size (in 250 m pixels)
-n <- round(N/16*0.1,0) ## set sample size (number of sampling locations)
+n <- round(N/16*0.05,0) ## set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
@@ -69,7 +68,7 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(5,7)], sloc)
 colnames(samp) <- c("L1", "L2", "lon", "lat")
-write.csv(samp, "GH_GS_sample.csv", row.names = F)
+write.csv(samp, "ZM_GS_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
 # render map
@@ -79,4 +78,4 @@ w <- leaflet() %>%
 w ## plot widget 
 
 # save widget
-saveWidget(w, 'GH_GS_sample.html', selfcontained = T)
+saveWidget(w, 'ZM_GS_sample.html', selfcontained = T)
