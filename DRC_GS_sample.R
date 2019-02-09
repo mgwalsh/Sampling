@@ -1,4 +1,4 @@
-# Spatially balanced sampling setup for GeoSurvey of Tanganyika & Haut-Lomami regions, DRC
+# Spatially balanced sampling setup for GeoSurvey of DRC
 # M. Walsh, October 2018
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets"), dependencies=T)
@@ -23,8 +23,8 @@ unzip("DRC_GADM_L2.zip", overwrite=T)
 shape <- shapefile("gadm36_COD_2.shp")
 
 # download ROI mask
-download("https://www.dropbox.com/s/b5jjwljh0otnbvy/ROI.zip?raw=1", "ROI.zip", mode="wb")
-unzip("ROI.zip", overwrite=T)
+download("https://www.dropbox.com/s/95rnm2mtcrd44nw/DRC.zip?raw=1", "DRC.zip", mode="wb")
+unzip("DRC.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 
@@ -43,7 +43,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## population size (in 250 m pixels)
-n <- round(N/16*0.1,0) ## set sample size (number of sampling locations)
+n <- round(N/16*0.05,0) ## set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
@@ -52,8 +52,8 @@ B <- cbind(p, rmask[,1], rmask[,2]) ## specifies balancing variables
 rsamp <- cube(p, B)                 ## samples from population
 
 # plot sample result
-plot(roi, axes=F, legend=F)
-points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.3)
+# plot(roi, axes=F, legend=F)
+# points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.3)
 
 # Write files -------------------------------------------------------------
 # extract sample coordinates
