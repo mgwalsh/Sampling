@@ -1,5 +1,5 @@
 # Spatially balanced sampling setup for GeoSurvey of Uganda
-# M. Walsh, December 2019
+# M. Walsh, March 2020
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets"), dependencies=T)
 suppressPackageStartupMessages({
@@ -40,7 +40,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## population size (in 250 m pixels)
-n <- round(N/16*0.05,0) ## set sample size (number of sampling locations)
+n <- round(N/16*0.15,0) ## set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
@@ -58,15 +58,15 @@ x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
 
-# attach GADM-L2 and above unit names from shape
+# attach GADM-L4 and above unit names from shape
 coordinates(xy) <- ~x+y
 crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
 sloc <- spTransform(xy, CRS(proj4string(shape)))
 gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
-samp <- cbind(gadm[ ,c(4,7)], sloc)
-colnames(samp) <- c("Province", "District", "lon", "lat")
-write.csv(samp, "ZM_GS_sample.csv", row.names = F)
+samp <- cbind(gadm[ ,c(4,6,8,10)], sloc)
+colnames(samp) <- c("District", "County", "Sub-county", "Parish", "lon", "lat")
+write.csv(samp, "./Results/UG_GS_L1_sample.csv", row.names = F)
 
 # Sampling map widget -----------------------------------------------------
 # render map
@@ -74,4 +74,5 @@ w <- leaflet() %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
   addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
 w ## plot widget 
-saveWidget(w, 'ZM_GS_sample.html', selfcontained = T)
+saveWidget(w, 'UG_GS_L1_sample.html', selfcontained = T)
+
