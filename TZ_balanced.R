@@ -6,7 +6,6 @@ suppressPackageStartupMessages({
   require(downloader)
   require(rgdal)
   require(raster)
-  require(sp)
   require(BalancedSampling)
   require(leaflet)
   require(htmlwidgets)
@@ -45,7 +44,7 @@ rmask <- index[which(index$index == 1),]
 # Geographically balanced sampling ----------------------------------------
 # set sampling parameters
 N <- nrow(rmask) ## population size (in 250 m pixels)
-n <- round(N/16*0.05,0) ## set sample size (number of sampling locations)
+n <- round(N/16*0.1,0) ## set sample size (number of sampling locations)
 p <- rep(n/N,N)  ## inclusion probabilities
 
 # draw geographically balanced sample
@@ -62,6 +61,7 @@ points(rmask[rsamp,1], rmask[rsamp,2], pch=3, col="red", cex=0.3)
 x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
 xy <- data.frame(cbind(x,y))
+# write.csv(xy, "xy.csv", row.names = F)
 
 # attach GADM-L3 and above unit names from shape
 coordinates(xy) <- ~x+y
@@ -79,6 +79,4 @@ w <- leaflet() %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
   addCircleMarkers(samp$Lon, samp$Lat, clusterOptions = markerClusterOptions())
 w ## plot widget 
-
-# save widget
 saveWidget(w, 'TZ_sample.html', selfcontained = T)
