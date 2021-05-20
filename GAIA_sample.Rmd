@@ -11,23 +11,23 @@ output:
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any adaptive mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown .Rmd script for this can be downloaded at [GAIA sample](GAIA lime application experiment sampling frame).
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any adaptive mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown .Rmd script for this can be downloaded at [GAIA sample]().
 
-# GAIA sampling plan R-script
+# GAIA sampling plan
 
 These are the R-packages that you will need to run the spatially balanced sampling script that we are proposing.
 
 ```{r}
-# package names
+# Package names
 packages <- c("rgdal", "raster", "sp", "BalancedSampling", "DT", "leaflet", "htmlwidgets")
 
-# install packages
+# Install packages
 installed_packages <- packages %in% rownames(installed.packages())
 if (any(installed_packages == FALSE)) {
   install.packages(packages[!installed_packages])
 }
 
-# load packages
+# Load packages
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
@@ -50,7 +50,7 @@ glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
 ```
 
-The subsequent chunk then then sets-up the layers for drawing a spatially balanced survey location sample from the ROI. We use the `overlay` and `lcube` functions from the `raster` (to create the ROI) and `BalancedSampling` (to sample the ROI) libraries in R [(R Core Team)](https://cran.univ-paris1.fr/web/packages/dplR/vignettes/intro-dplR.pdf) to draw a spatially representative sample. The method implements the cube method of [Deville and Till?? (2004)](https://academic.oup.com/biomet/article-abstract/91/4/893/459329?redirectedFrom=fulltext), which allows sampling based on the relevant inclusion probabilities while aiming for balance and spread with respect to specified covariates and/or constraints. 
+The subsequent chunk then then sets-up the layers for drawing a spatially balanced survey location sample from the ROI. We use the `overlay` and `lcube` functions from the `raster` (to create the ROI) and `BalancedSampling` (to sample the ROI) libraries in R [(R Core Team)](https://cran.univ-paris1.fr/web/packages/dplR/vignettes/intro-dplR.pdf) to draw a spatially representative sample. The method implements the cube method of [Deville and Tillé (2004)](https://academic.oup.com/biomet/article-abstract/91/4/893/459329?redirectedFrom=fulltext), which allows sampling based on the relevant inclusion probabilities while aiming for balance and spread with respect to specified covariates and/or constraints. 
 
 ```{r}
 # Sample setup ------------------------------------------------------------
@@ -68,7 +68,7 @@ index <- as.data.frame(cbind(coord, index))
 rmask <- index[which(index$index == 1),]
 ```
 
-In this case potential trial sites falling within the ROI were selected purely for spatial balance, which entails that the mean coordinates of the sites are close to the mean coordinates of all points in the sample frame and have adequate spatial spread. This ensures that the observations are spread out rather than clustered with respect to the spatial coordinates, see [Grafstr??m and Schelin (2014)](https://cran.r-project.org/web/packages/BalancedSampling/index.html). This next chunk then draws the spatially balanced sample of the proposed trial site locations.
+In this case potential trial sites falling within the ROI were selected purely for spatial balance, which entails that the mean coordinates of the sites are close to the mean coordinates of all points in the sample frame and have adequate spatial spread. This ensures that the observations are spread out rather than clustered with respect to the spatial coordinates, see [Grafström and Schelin (2014)](https://cran.r-project.org/web/packages/BalancedSampling/index.html). This next chunk then draws the spatially balanced sample of the proposed trial site locations.
 
 ```{r}
 # Spatially balanced sampling ---------------------------------------------
