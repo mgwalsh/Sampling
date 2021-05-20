@@ -1,0 +1,142 @@
+---
+title: GAIA lime application experiment sampling frame
+author: M.G. Walsh, J.V. Silva
+date: "`r format(Sys.time(), '%d, %B, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 1
+    css: style.css
+---
+
+# Introduction
+
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any adaptive mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown .Rmd script for this can be downloaded at [GAIA sample](GAIA lime application experiment sampling frame).
+
+# GAIA sampling plan R-script
+
+These are the R-packages that you will need to run the spatially balanced sampling script that we are proposing.
+
+```{r}
+# package names
+packages <- c("rgdal", "raster", "sp", "BalancedSampling", "DT", "leaflet", "htmlwidgets")
+
+# install packages
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# load packages
+invisible(lapply(packages, library, character.only = TRUE))
+```
+
+The following chunk downloads the needed geotiffs and shape file, which define the GAIA project's ROI (i.e, cropland && topsoil pH <= 6.5 && the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
+
+```{r}
+# create a data folder in your current working directory
+dir.create("GAIA_sample", showWarnings=F)
+setwd("./GAIA_sample")
+
+# download GADM-based shapefile (courtesy: http://www.gadm.org)
+# download.file("", "GAIA_shp.zip")
+unzip("GAIA_shp.zip", overwrite=T)
+shape <- shapefile("ROI_GAIA_Districts.shp")
+
+# download ROI definition grids
+# download.file("", "GAIA_masks.zip")
+unzip("GAIA_masks.zip", overwrite=T)
+glist <- list.files(pattern="tif", full.names=T)
+grids <- stack(glist)
+```
+
+The subsequent chunk then then sets-up the layers for drawing a spatially balanced survey location sample from the ROI. We use the `overlay` and `lcube` functions from the `raster` (to create the ROI) and `BalancedSampling` (to sample the ROI) libraries in R [(R Core Team)](https://cran.univ-paris1.fr/web/packages/dplR/vignettes/intro-dplR.pdf) to draw a spatially representative sample. The method implements the cube method of [Deville and Till?? (2004)](https://academic.oup.com/biomet/article-abstract/91/4/893/459329?redirectedFrom=fulltext), which allows sampling based on the relevant inclusion probabilities while aiming for balance and spread with respect to specified covariates and/or constraints. 
+
+```{r}
+# Sample setup ------------------------------------------------------------
+# create a ROI image based on a cropland mask, the relevant GAIA districts and soil pH predictions 
+cp <- 1    ## set cropland mask to 1 (present)
+dt <- 1    ## set relevant admin units (present)
+ph <- 1    ## set to pH <= 6.5 ... acid soils (present)
+roi <- overlay(grids, fun=function(x) 
+{return(ifelse(x[1] == cp && x[2] == dt && x[3] == ph, 1, 0))}) ## extracts ROI
+
+# extract ROI coordinates
+coord <- coordinates(roi)
+index <- extract(roi, coord) ## this step is quite slow on a normal computer ... patience
+index <- as.data.frame(cbind(coord, index))
+rmask <- index[which(index$index == 1),]
+```
+
+In this case potential trial sites falling within the ROI were selected purely for spatial balance, which entails that the mean coordinates of the sites are close to the mean coordinates of all points in the sample frame and have adequate spatial spread. This ensures that the observations are spread out rather than clustered with respect to the spatial coordinates, see [Grafstr??m and Schelin (2014)](https://cran.r-project.org/web/packages/BalancedSampling/index.html). This next chunk then draws the spatially balanced sample of the proposed trial site locations.
+
+```{r}
+# Spatially balanced sampling ---------------------------------------------
+# set sampling parameters
+N <- nrow(rmask) ## ROI size (in 250 m pixels)
+n <- 300 ## number of planned trials
+p <- rep(n/N,N)  ## inclusion probabilities
+
+# draw geographically balanced sample
+set.seed(6405)                      ## sets repeatable randomization seed
+B <- cbind(p, rmask[,1], rmask[,2]) ## specifies the spatial balancing variables
+rsamp <- cube(p, B)                 ## samples from the ROI
+```
+
+The next chunk generates various output files, which can be used for planning and navigation.
+
+```{r}
+# Write files -------------------------------------------------------------
+# extract sample coordinates
+x <- rmask[rsamp,1]
+y <- rmask[rsamp,2]
+xy <- data.frame(cbind(x,y))
+
+# Define unique grid ID's (GID)
+# Specify GID scale (res.pixel, in m)
+res.pixel <- 10000
+
+# Grid ID (GID) definition
+xgid <- ceiling(abs(xy$x)/res.pixel)
+ygid <- ceiling(abs(xy$y)/res.pixel)
+gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
+gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
+GID <- paste(gidx, gidy, sep="")
+xy <- cbind(GID, xy)
+
+# attach GADM unit names from shape
+coordinates(xy) <- ~x+y
+crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+sloc <- spTransform(xy, CRS(proj4string(shape)))
+gadm <- sloc %over% shape
+sloc <- as.data.frame(sloc)
+samp <- cbind(gadm[ ,c(2,4,7)], sloc)
+colnames(samp) <- c("Country","L1","L2","gid","lon","lat")
+write.csv(samp, "GAIA_sample.csv", row.names = F)
+```
+
+The table below is the main output data frame `samp` of the proposed trial locations with their lon/lat coordinates, which can be sorted by Level 0-2 national administrative units [GADM](https://gadm.org/data.html) and/or `GID`. The `GID` is like a military style 10x10 km grid ID that may contain several sampling locations depending on the spatial distribution of the number of potential trial sites (see `N`, the spatially balanced sampling chunk above). Our practice has been to prioritize field activities in `GID` that contain at least several trial locations. The data frame is also written as a csv file `GAIA_sample.csv` into your working directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
+
+\
+```{r, echo=FALSE}
+datatable(samp)
+```
+\
+
+You can also generate a zoomable map of the proposed survey locations with the `leaflet` package. This shows the proposed distribution of the trial sites, which will help with navigation and operational planning on the ground. It is also saved in your working directory and can be used in presentations and additional planning documents.
+
+```{r}
+# Sampling map widget -----------------------------------------------------
+# render map
+w <- leaflet() %>%
+  setView(lng = mean(samp$lon), lat = mean(samp$lat), zoom = 4) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
+  addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
+saveWidget(w, "GAIA_sample.html", selfcontained = T) ## save widget
+w ## plot widget 
+```
+
+# Follow-up on the ground
+
+Note that follow-up on the ground will be needed to actually install any actual field trials. This will require negogiations with farmers, government, private sector and civil society representatives at the proposed locations and also a pre-survey of the prevailing soil conditions and cropping systems for such trials. We will provide additional guidance about the relevant field procedures ... stay tuned.
+
