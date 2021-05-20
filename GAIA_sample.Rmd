@@ -1,6 +1,6 @@
 ---
 title: GAIA lime application experiment sampling frame
-author: M.G. Walsh, J.V. Silva
+author: M.G. Walsh and J.V. Silva
 date: "`r format(Sys.time(), '%d, %B, %Y')`"
 output:
   html_document:
