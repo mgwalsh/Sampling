@@ -11,7 +11,7 @@ output:
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any adaptive mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown .Rmd script for this can be downloaded at [GAIA sample]().
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` script for this can be downloaded at [GAIA sample]().
 
 # GAIA sampling plan
 
@@ -34,16 +34,17 @@ invisible(lapply(packages, library, character.only = TRUE))
 The following chunk downloads the needed geotiffs and shape file, which define the GAIA project's ROI (i.e, cropland && topsoil pH <= 6.5 && the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
 
 ```{r}
-# create a data folder in your current working directory
+# Create a data folder in your current working directory
 dir.create("GAIA_sample", showWarnings=F)
 setwd("./GAIA_sample")
+dir.create("Results")
 
-# download GADM-based shapefile (courtesy: http://www.gadm.org)
+# Download GADM-based shapefile (courtesy: http://www.gadm.org)
 # download.file("", "GAIA_shp.zip")
 unzip("GAIA_shp.zip", overwrite=T)
 shape <- shapefile("ROI_GAIA_Districts.shp")
 
-# download ROI definition grids
+# Download ROI definition grids
 # download.file("", "GAIA_masks.zip")
 unzip("GAIA_masks.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
@@ -112,10 +113,10 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(2,4,7)], sloc)
 colnames(samp) <- c("Country","L1","L2","gid","lon","lat")
-write.csv(samp, "GAIA_sample.csv", row.names = F)
+write.csv(samp, "./Results/GAIA_sample.csv", row.names = F)
 ```
 
-The table below is the main output data frame `samp` of the proposed trial locations with their lon/lat coordinates, which can be sorted by Level 0-2 national administrative units [GADM](https://gadm.org/data.html) and/or `GID`. The `GID` is like a military style 10x10 km grid ID that may contain several sampling locations depending on the spatial distribution of the number of potential trial sites (see `N`, the spatially balanced sampling chunk above). Our practice has been to prioritize field activities in `GID` that contain at least several trial locations. The data frame is also written as a csv file `GAIA_sample.csv` into your working directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
+The table below is the main output data frame `samp` of the proposed trial locations with their lon/lat coordinates, which can be sorted by Level 0-2 national administrative units [GADM](https://gadm.org/data.html) and/or `GID`. The `GID` is like a military style 10x10 km grid ID that may contain several sampling locations depending on the spatial distribution of the number of potential trial sites (see `N`, the *spatially balanced sampling* chunk above). Our practice has been to prioritize field activities in `GID` that contain at least several trial locations. The data frame is also written as a csv file `GAIA_sample.csv` into your working directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
 
 \
 ```{r, echo=FALSE}
