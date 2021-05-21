@@ -32,7 +32,7 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-The following chunk downloads the needed geotiffs and shape file, which define the GAIA project's ROI (i.e, cropland & topsoil pH <= 6.5 & the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
+The following chunk downloads the needed geotiffs and a shape file, which define the GAIA project's ROI (i.e, cropland & topsoil pH <= 6.5 & the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
 
 ```{r}
 # Create a data folder in your current working directory
