@@ -19,7 +19,7 @@ These are the R-packages that you will need to install to run the spatially bala
 
 ```{r}
 # Package names
-packages <- c("rgdal", "raster", "sp", "BalancedSampling", "DT", "leaflet", "htmlwidgets")
+packages <- c("downloader", "rgdal", "raster", "sp", "BalancedSampling", "DT", "leaflet", "htmlwidgets")
 
 # Install packages
 installed_packages <- packages %in% rownames(installed.packages())
