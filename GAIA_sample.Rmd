@@ -10,6 +10,10 @@ output:
     css: style.css
 ---
 
+```{r, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+```
+
 # Introduction
 
 This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA trials sample](https://github.com/mgwalsh/Sampling/blob/master/GAIA_sample.Rmd).
