@@ -6,16 +6,17 @@ output:
   html_document:
     toc: true
     toc_depth: 1
+    fig_caption: true
     css: style.css
 ---
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the plan is available at [GAIA sample]().
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA sample]().
 
 # GAIA sampling plan
 
-Spatially balanced sampling designs are probability-based designs that specify where to sample so that inferences from the sample apply to the entire population or ROI under investigation. Non-spatially balanced random samples, another popular method, have a tendency to cluster points and have no method to ensure the entire ROI is covered. These are the R-packages that you will need to install to run the spatially balanced sampling approach that we are proposing.
+These are the R-packages that you will need to install to run the spatially balanced sampling approach that we are proposing.
 
 ```{r}
 # Package names
