@@ -1,5 +1,5 @@
 ---
-title: GAIA lime application experiment sampling frame
+title: GAIA lime application experiment sampling plan
 author: M.G. Walsh and J.V. Silva
 date: "`r format(Sys.time(), '%d, %B, %Y')`"
 output:
@@ -11,11 +11,11 @@ output:
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` script for this can be downloaded at [GAIA sample]().
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the plan is available at [GAIA sample]().
 
 # GAIA sampling plan
 
-These are the R-packages that you will need to run the spatially balanced sampling script that we are proposing.
+These are the R-packages that you will need to install to run the spatially balanced sampling approach that we are proposing.
 
 ```{r}
 # Package names
@@ -31,7 +31,7 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-The following chunk downloads the needed geotiffs and shape file, which define the GAIA project's ROI (i.e, cropland && topsoil pH <= 6.5 && the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
+The following chunk downloads the needed geotiffs and shape file, which define the GAIA project's ROI (i.e, cropland & topsoil pH <= 6.5 & the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
 
 ```{r}
 # Create a data folder in your current working directory
@@ -54,7 +54,7 @@ grids <- stack(glist)
 The subsequent chunk then then sets-up the layers for drawing a spatially balanced survey location sample from the ROI. We use the `overlay` and `lcube` functions from the `raster` (to create the ROI) and `BalancedSampling` (to sample the ROI) libraries in R [(R Core Team)](https://cran.univ-paris1.fr/web/packages/dplR/vignettes/intro-dplR.pdf) to draw a spatially representative sample. The method implements the cube method of [Deville and Tillé (2004)](https://academic.oup.com/biomet/article-abstract/91/4/893/459329?redirectedFrom=fulltext), which allows sampling based on the relevant inclusion probabilities while aiming for balance and spread with respect to specified covariates and/or constraints. 
 
 ```{r}
-# Sample setup ------------------------------------------------------------
+# Sample setup
 # create a ROI image based on a cropland mask, the relevant GAIA districts and soil pH predictions 
 cp <- 1    ## set cropland mask to 1 (present)
 dt <- 1    ## set relevant admin units (present)
@@ -72,7 +72,7 @@ rmask <- index[which(index$index == 1),]
 In this case potential trial sites falling within the ROI were selected purely for spatial balance, which entails that the mean coordinates of the sites are close to the mean coordinates of all points in the sample frame and have adequate spatial spread. This ensures that the observations are spread out rather than clustered with respect to the spatial coordinates, see [Grafström and Schelin (2014)](https://cran.r-project.org/web/packages/BalancedSampling/index.html). This next chunk then draws the spatially balanced sample of the proposed trial site locations.
 
 ```{r}
-# Spatially balanced sampling ---------------------------------------------
+# Spatially balanced sampling
 # set sampling parameters
 N <- nrow(rmask) ## ROI size (in 250 m pixels)
 n <- 300 ## number of planned trials
@@ -87,7 +87,7 @@ rsamp <- cube(p, B)                 ## samples from the ROI
 The next chunk generates various output files, which can be used for planning and navigation.
 
 ```{r}
-# Write files -------------------------------------------------------------
+# Write files
 # extract sample coordinates
 x <- rmask[rsamp,1]
 y <- rmask[rsamp,2]
@@ -113,10 +113,10 @@ gadm <- sloc %over% shape
 sloc <- as.data.frame(sloc)
 samp <- cbind(gadm[ ,c(2,4,7)], sloc)
 colnames(samp) <- c("Country","L1","L2","gid","lon","lat")
-write.csv(samp, "./Results/GAIA_sample.csv", row.names = F)
+write.csv(samp, "./GAIA_sample/Results/GAIA_sample.csv", row.names = F)
 ```
 
-The table below is the main output data frame `samp` of the proposed trial locations with their lon/lat coordinates, which can be sorted by Level 0-2 national administrative units [GADM](https://gadm.org/data.html) and/or `GID`. The `GID` is like a military style 10x10 km grid ID that may contain several sampling locations depending on the spatial distribution of the number of potential trial sites (see `N`, the *spatially balanced sampling* chunk above). Our practice has been to prioritize field activities in `GID` that contain at least several trial locations. The data frame is also written as a csv file `GAIA_sample.csv` into your working directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
+The table below is the main output data frame `samp` of the proposed trial locations with their lon/lat coordinates, which can be sorted by Level 0-2 national administrative units [GADM](https://gadm.org/data.html) and/or `GID`. The `GID` is like a military style 10x10 km grid ID that may contain several sampling locations depending on the spatial distribution of the number of potential trial sites (see `N`, the *spatially balanced sampling* chunk above). Our practice has been to prioritize field activities in `GID` that contain at least several trial locations. The data frame is also written as a csv file `GAIA_sample.csv` into your `./GAIA_sample/Results` directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
 
 \
 ```{r, echo=FALSE}
@@ -127,13 +127,12 @@ datatable(samp)
 You can also generate a zoomable map of the proposed survey locations with the `leaflet` package. This shows the proposed distribution of the trial sites, which will help with navigation and operational planning on the ground. It is also saved in your working directory and can be used in presentations and additional planning documents.
 
 ```{r}
-# Sampling map widget -----------------------------------------------------
-# render map
+# Sampling map widget
 w <- leaflet() %>%
   setView(lng = mean(samp$lon), lat = mean(samp$lat), zoom = 4) %>%
   addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
   addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
-saveWidget(w, "GAIA_sample.html", selfcontained = T) ## save widget
+saveWidget(w, "./Results/GAIA_sample.html", selfcontained = T) ## save widget
 w ## plot widget 
 ```
 
