@@ -12,7 +12,7 @@ output:
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA sample](https://github.com/mgwalsh/Sampling/blob/master/GAIA_sample.Rmd).
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA trials sample](https://github.com/mgwalsh/Sampling/blob/master/GAIA_sample.Rmd).
 
 # GAIA sampling plan
 
@@ -139,5 +139,5 @@ w ## plot widget
 
 # Follow-up on the ground
 
-Note that follow-up on the ground will be needed to actually install any actual field trials. This will require negogiations with farmers, government, private sector and civil society representatives at the proposed locations and also a pre-survey of the prevailing soil conditions and cropping systems for such trials. We will provide additional guidance about the relevant field procedures ... stay tuned.
+Note that follow-up on the ground will be needed to actually install any actual field trials. This will require negogiations with farmers, government, private sector and civil society representatives at the proposed locations and also a pre-survey of the prevailing soil conditions and cropping systems for such trials. Challenges to completing this plan will also include sampling crops across large areas during short harvest periods, analyzing large numbers of samples and associated data in areas in which access to suitable laboratories and trained personnel is often lacking, and communicating sparse data and their associated uncertainties. We will provide additional guidance about the relevant field procedures ... stay tuned.
 
