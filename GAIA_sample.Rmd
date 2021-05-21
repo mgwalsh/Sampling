@@ -16,7 +16,7 @@ knitr::opts_chunk$set(message = FALSE)
 
 # Introduction
 
-This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA trials sample](https://github.com/mgwalsh/Sampling/blob/master/GAIA_sample.Rmd).
+This notebook describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling or experimentation is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that ROI. A geograhically consistent field sampling plan for experiments should therefore always be defined in terms of the immediate needs and constraints of the measurement, mapping and monitoring tasks at hand, but within a long-term planning context. The markdown `.Rmd` file for the GAIA plan is available at [GAIA sample](https://github.com/mgwalsh/Sampling/blob/master/GAIA_sample.Rmd).
 
 # GAIA sampling plan
 
@@ -36,7 +36,7 @@ if (any(installed_packages == FALSE)) {
 invisible(lapply(packages, library, character.only = TRUE))
 ```
 
-The following chunk downloads the needed geotiffs and a shape file, which define the GAIA project's ROI (i.e, cropland & topsoil pH <= 6.5 & the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
+The following chunk downloads the needed geotiffs and a shape file, which define the GAIA project's ROI (i.e., cropland with topsoil pH <= 6.5 and within the relevant administrative units to the GAIA project in Tanzania, Rwanda, Ethiopia & Kenya. Note that the administrative units have different area coverages within the overall ROI of the project and will be weighted accordingly based on their inclusion probabilities.
 
 ```{r}
 # Create a data folder in your current working directory
@@ -45,12 +45,12 @@ setwd("./GAIA_sample")
 dir.create("Results")
 
 # Download GADM-based shapefile (courtesy: http://www.gadm.org)
-# download.file("", "GAIA_shp.zip")
+download.file("https://osf.io/sc4zt/", "GAIA_shp.zip")
 unzip("GAIA_shp.zip", overwrite=T)
 shape <- shapefile("ROI_GAIA_Districts.shp")
 
 # Download ROI definition grids
-# download.file("", "GAIA_masks.zip")
+download.file("https://osf.io/kt4bp?raw=1", "GAIA_masks.zip")
 unzip("GAIA_masks.zip", overwrite=T)
 glist <- list.files(pattern="tif", full.names=T)
 grids <- stack(glist)
