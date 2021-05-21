@@ -1,0 +1,183 @@
+---
+title: Field surveys, GeoTags and Physical Sample Collections
+author: M.G. Walsh and B.A. Walsh
+date: "`r format(Sys.time(), '%d, %B, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 1
+    fig_caption: true
+    css: style.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Introduction
+
+This notebook provides guidelines for conducting field surveys and for collecting and curating physical samples. This is the practical, field-based side-of-things, which provides the data links between survey designs and procedures for field observations, experiments and physical measurements of e.g., rock, water, soil, plant and/or livestock samples. While field survey activities are expensive to implement, they also provide particularly high information values for any subsequent cropland management decisions. So, it is very important to plan and execute the associated field activities carefully. We think of field surveys, sample collections and experiments of being implemented in the following steps:
+
+1. Delineation of a geographical Region of Interest (ROI).
+1. Drawing up a spatially representative sample of locations from within the ROI, considering any potential field crew safety factors ... first-and-foremost!
+1. Setting up of standard field observation, measurement and/or experimental protocols that work digitally with e.g. [KoboToolbox](https://www.kobotoolbox.org) or other [ODK](https://opendatakit.org/) resources.
+1. Conducting the field sampling and collecting the needed georeferenced observations, measurements, and physical samples.
+1. Sample processing and data curation.
+
+The associated activities should be carried out in sequence; but, the actual variables that are captured during field surveys can be changed as different experimental or monitoring priorities emerge over time. This notebook covers the initial 5 steps and include example data for Rwanda, R-code and the relevant links to external open-source resources for survey activities.
+
+# Delineating a region of interest
+
+This section describes setting up a field sampling plan that provides representative spatial coverage over any given landscape or [Region of Interest (ROI)](https://en.wikipedia.org/wiki/Region_of_interest). Selecting an ROI for ground sampling is a critical step, because it determines both the main and recurrent costs of any mapping or monitoring program as well as the resulting precision and accuracy of inferences and predictions that are made about that RoI. A geograhically consistent field sampling plan should therefore always be defined in terms of the immediate needs and constraints of the mapping and monitoring tasks at hand, but within a long-term planning context. 
+
+The section provides an example that is based on the need for physically sampling representative *cropland* areas of all of Rwanda. By cropland we actually mean the *Managed and cultivated areas* as per the relevant [FAO LCCS](http://www.fao.org/3/x0596e/X0596e02.htm#TopOfPage) definitions. Also see the corresponding [ISO 19144](https://www.iso.org/obp/ui/#iso:std:iso:19144:-2:ed-1:v1:en) specifics and definitions. 
+
+The ROI calculations for this example are shown in the R-chunks presented below. Note that Cropland and Building occurrences are based on comprehensive GeoSurveys, which were conducted in 2019 to map croplands in Rwanda. The data and set-up needed for this exercise are also found below. A seperate notebook for how the GeoSurvey's were done and analyzed in Rwanda is available at [GeoSurvey](). This notebook is maintained on [Github](https://github.com/mgwalsh/RwaSIS/blob/master/RwaSIS_cropland_sample.Rmd). You can fork it from there and modify it as you see fit. You'll need the following [R-packages](https://cran.univ-paris1.fr/web/packages/dplR/vignettes/intro-dplR.pdf) to run this example.
+
+```{r}
+# Package names
+packages <- c("rgdal", "raster", "sp", "BalancedSampling", "DT", "leaflet", "htmlwidgets")
+
+# Install packages
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+# Load packages
+invisible(lapply(packages, library, character.only = TRUE))
+```
+
+The following chunk then downloads the needed and publicly available geotiffs and shape file that define the RwaSIS project's main ROI constraints (i.e, cropland & distance to buildings of < 0.5 km).
+
+```{r}
+# Create a data folder in your current working directory
+dir.create("RW_MS_sample", showWarnings=F)
+setwd("./RW_MS_sample")
+
+# Download GADM-L5 shapefile (courtesy: http://www.gadm.org)
+download.file("https://www.dropbox.com/s/fhusrzswk599crn/RWA_level5.zip?raw=1", "RWA_level5.zip")
+unzip("RWA_level5.zip", overwrite=T)
+shape <- shapefile("gadm36_RWA_5.shp")
+
+# Download Rwanda GeoSurvey prediction layers
+download.file("https://osf.io/u73pd?raw=1", "RW_GS_preds.zip")
+unzip("RW_GS_preds.zip", overwrite=T)
+glist <- list.files(pattern="tif", full.names=T)
+grids <- stack(glist)
+```
+
+The subsequent chunk then then sets-up the layers for drawing a spatially balanced survey location sample from the ROI. The method implements the cube method of [Deville and Tillé (2004)](https://academic.oup.com/biomet/article-abstract/91/4/893/459329?redirectedFrom=fulltext), which allows sampling based on the relevant inclusion probabilities while aiming for balance and spread with respect to speciﬁed covariates and/or constraints. 
+
+```{r}
+# Create a ROI image based on cropland mask and distance to nearest buildings
+cp <- 1    ## set cropland mask to 1 (present)
+bd <- 0.5  ## set maximum distance to the nearest "buildings" (in km) ... for logistical reasons
+roi <- overlay(grids, fun=function(x) {
+               return(ifelse(x[4] == cp && x[2] <= bd, 1, 0))
+})
+
+# Extract ROI coordinates
+coord <- coordinates(roi)
+index <- extract(roi, coord)
+index <- as.data.frame(cbind(coord, index))
+rmask <- index[which(index$index == 1),]
+```
+
+In this example potential survey sites falling within the ROI were selected purely for spatial balance, which entails that the mean coordinates of sample sites are close to the mean coordinates of all points in the sample frame. This ensures that the observations are spread out rather than clustered (see [Grafström and Schelin (2014)](https://cran.r-project.org/web/packages/BalancedSampling/index.html)). This next chunk then draws the spatially balanced sample of the proposed cropland sampling ROI.
+
+```{r}
+# Set sampling parameters
+N <- nrow(rmask) ## ROI size (in 250 m pixels)
+n <- round(N/16*0.15,0) ## set sample size (number of sampling locations)
+p <- rep(n/N,N)  ## inclusion probabilities
+
+# Draw geographically balanced sample
+set.seed(6405)                      ## sets a randomization seed, note if you change this you will get different results
+B <- cbind(p, rmask[,1], rmask[,2]) ## specifies spatial balancing variables
+rsamp <- cube(p, B)                 ## samples from the ROI
+```
+
+The next chunk generates various output files, which can be used for survey planning and navigation.
+
+```{r}
+# Write files
+# extract sample coordinates
+x <- rmask[rsamp,1]
+y <- rmask[rsamp,2]
+xy <- data.frame(cbind(x,y))
+
+# Define unique grid ID's (GID)
+# Specify GID scale (res.pixel, in m)
+res.pixel <- 10000
+
+# Grid ID (GID) definition
+xgid <- ceiling(abs(xy$x)/res.pixel)
+ygid <- ceiling(abs(xy$y)/res.pixel)
+gidx <- ifelse(xy$x<0, paste("W", xgid, sep=""), paste("E", xgid, sep=""))
+gidy <- ifelse(xy$y<0, paste("S", ygid, sep=""), paste("N", ygid, sep=""))
+GID <- paste(gidx, gidy, sep="")
+xy <- cbind(GID, xy)
+
+# Attach GADM-L5 and above unit names from shape
+coordinates(xy) <- ~x+y
+crs(xy) <- "+proj=laea +ellps=WGS84 +lon_0=20 +lat_0=5 +units=m +no_defs"
+sloc <- spTransform(xy, CRS(proj4string(shape)))
+gadm <- sloc %over% shape
+sloc <- as.data.frame(sloc)
+samp <- cbind(gadm[ ,c(4,6,8,10,12)], sloc)
+colnames(samp) <- c("province","district","sector","cell","village","gid","lon","lat")
+write.csv(samp, "RW_cropland_sample.csv", row.names = F)
+```
+
+The table below is the main output data frame `samp` of the proposed sampling locations with their lon/lat coordinates, which can be sorted by various administrative units and/or `GID`. The `GID` is sort of like a military style 10x10 km grid ID that will usually contain several sampling locations. Our practice has been to prioritize survey activities in `GID` that contain at least several locations. The data frame is also written as a csv file `RW_cropland_sample.csv` into your working directory, which you can use as waypoint input to a GPS (see e.g: [GPSBabel](https://www.gpsbabel.org)), tablet or smart phone for in-the-field navigation.
+
+\
+```{r, echo=FALSE}
+datatable(samp)
+```
+\
+You can also generate a zoomable map of the proposed survey locations with the `leaflet` package. This shows the proposed distribution of the survey sites, which will help with navigation and operational planning on the ground. It is also saved in your working directory and can be used in presentations and additional planning documents.
+
+```{r}
+# Sampling map widget with ROI
+w <- leaflet() %>%
+  setView(lng = mean(samp$lon), lat = mean(samp$lat), zoom = 8) %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik) %>%
+  addCircleMarkers(samp$lon, samp$lat, clusterOptions = markerClusterOptions())
+saveWidget(w, "RwaSIS_cropland_sample.html", selfcontained = T) ## save map widget
+w ## plot widget 
+```
+
+# Setting up standard geotagging and physical sampling protocols
+
+After careful GeoSurvey interpretations (e.g., see at: [GeoSurvey data prediction workflows (2020)](https://doi.org/10.17605/OSF.IO/VXC97), we currently use what we call [MobileSurvey]() to sample, observe, measure, and ground-validate the distribution of cropping systems, crop types and to collect georeferenced and time stamped physical (rock, soil, plant, livestock) samples and any other data that are relevant to adaptive cropland management interventions (e.g., the presence of soil erosion features and/or irrigation and soil conservation structures). They can also be used for registering various crop management trials. 
+
+MobileSurvey is “stop-and-measure” based, meaning that any observations & measurements are done when you stop your car, motorbike or walk-in and do your observations and sample collections over a predefined area and record their georeference. As long as the underlying sampling frame that is used to determine locations is geographically representative of a given ROI, these data are suitable for generating unbiased, georefenced estimates of use-cases for crop distribution modeling, predictive soil and plant nutrient mapping, crop yield monitoring, agricultural input monitoring, electrification, mechanization and irrigation potentials and the development of environmental impact assessments.
+
+You can also use similar protocols for geotagging any rock, soil, plant and livestock samples at the locations that you visit. All physical samples should receive *Universally Unique IDs* that are embedded in [QR-code labels](https://tag.qed.ai/sheet/) for each sample, which are tagged with metadata and the relevant O&M in the field. This process also allows tracking any sample through various (MIR, XRF and/or wet chemistry) laboratory processes and to curate physical samples at your various laboratory’s sample storage facilities.
+
+You will need the following equipment and materials:
+
+1. An Android smart phone or tablet.
+1. A separate GPS device (optional, but highly recommended for field navigation).
+1. At least one soil auger marked with colored tape at 20 and 50 cm from the tip.
+1. 2, 20-liter plastic buckets.
+1. A 5-liter plastic jerry can for water.
+1. A rope or cable marked with colored tape at 2.82, 4.61 and 5.64 meters.
+1. Sturdy, recyclable ~1-2 liter plastic containers for each rock/soil/plant/livestock sample.
+1. Sticky QR code labels, 2 for each sample container.
+
+Before you go into the field:
+
+* Install the needed ODK forms. To use the ODK soil sample login form you initially need to install the following applications on your Android device (phone or tablet): Use the following link to [KoBoCollect](https://support.kobotoolbox.org/kobocollect-android.html) for detailed instructions. 
+* something like [XZing]() barcode scanner (to read QR code labels on your device).
+* something like [GPS Essentials]() (if you are going to be using your phone or tablet for field navigation rather than a separate GPS unit).
+* Note that most field survey crews will need to be trained in GPS navigation prior to departing for surveys. However, the training can be usually be in a single day for multiple crews.
+
+You can locate the needed apps on Google Play by searching for them by name. Note that you will need an Internet connection for this. Once you have installed the software on your Android device: start [KoBoCollect]() and then set the server address that will link you to the relevant forms: General Settings > Server. The General Settings menu can be accessed by tapping the <left> menu button on your device. 
+
+* Don’t worry about entering a Username or Password. They are not needed.
+* Set the URL field to e.g.: http://??.
+
+This allows you to download blank forms for use on your Android device. It also allows you to save any completed forms to a database on the KoBoToolbox server. To download the blank ODK Soil sample form to your device, follow these 3 steps:
