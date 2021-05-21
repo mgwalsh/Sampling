@@ -45,7 +45,7 @@ setwd("./GAIA_sample")
 dir.create("Results")
 
 # Download GADM-based shapefile (courtesy: http://www.gadm.org)
-download.file("https://osf.io/sc4zt/", "GAIA_shp.zip")
+download.file("https://osf.io/sc4zt?raw=1", "GAIA_shp.zip")
 unzip("GAIA_shp.zip", overwrite=T)
 shape <- shapefile("ROI_GAIA_Districts.shp")
 
