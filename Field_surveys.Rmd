@@ -10,8 +10,8 @@ output:
     css: style.css
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r, echo=FALSE}
+knitr::opts_chunk$set(message = FALSE)
 ```
 
 # Introduction
@@ -153,7 +153,7 @@ w ## plot widget
 
 After careful GeoSurvey interpretations (e.g., see at: [GeoSurvey data prediction workflows (2020)](https://doi.org/10.17605/OSF.IO/VXC97), we currently use what we call [MobileSurvey]() to sample, observe, measure, and ground-validate the distribution of cropping systems, crop types and to collect georeferenced and time stamped physical (rock, soil, plant, livestock) samples and any other data that are relevant to adaptive cropland management interventions (e.g., the presence of soil erosion features and/or irrigation and soil conservation structures). They can also be used for registering various crop management trials. 
 
-MobileSurvey is “stop-and-measure” based, meaning that any observations & measurements are done when you stop your car, motorbike or walk-in and do your observations and sample collections over a predefined area and record their georeference. As long as the underlying sampling frame that is used to determine locations is geographically representative of a given ROI, these data are suitable for generating unbiased, georefenced estimates of use-cases for crop distribution modeling, predictive soil and plant nutrient mapping, crop yield monitoring, agricultural input monitoring, electrification, mechanization and irrigation potentials and the development of environmental impact assessments.
+MobileSurvey is “stop-and-measure” based, meaning that any observations & measurements are done when you stop your car, motorbike or walk-in and do your observations and sample collections over a predefined area and record their georeference. As long as the underlying sampling frame that is used to determine locations is geographically representative of a given ROI, these data are suitable for generating unbiased, georeferenced estimates of use-cases for crop distribution modeling, predictive soil and plant nutrient mapping, crop yield monitoring, agricultural input monitoring, electrification, mechanization and irrigation potentials and the development of environmental impact assessments.
 
 You can also use similar protocols for geotagging any rock, soil, plant and livestock samples at the locations that you visit. All physical samples should receive *Universally Unique IDs* that are embedded in [QR-code labels](https://tag.qed.ai/sheet/) for each sample, which are tagged with metadata and the relevant O&M in the field. This process also allows tracking any sample through various (MIR, XRF and/or wet chemistry) laboratory processes and to curate physical samples at your various laboratory’s sample storage facilities.
 
