@@ -15,7 +15,7 @@ This notebook describes setting up a field sampling plan that provides represent
 
 # GAIA sampling plan
 
-These are the R-packages that you will need to install to run the spatially balanced sampling approach that we are proposing.
+Spatially balanced sampling designs are probability-based designs that specify where to sample so that inferences from the sample apply to the entire population or ROI under investigation. Non-spatially balanced random samples, another popular method, have a tendency to cluster points and have no method to ensure the entire ROI is covered. These are the R-packages that you will need to install to run the spatially balanced sampling approach that we are proposing.
 
 ```{r}
 # Package names
