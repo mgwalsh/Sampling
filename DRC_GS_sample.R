@@ -1,5 +1,5 @@
 # Spatially balanced sampling setup for GeoSurvey of DRC
-# M. Walsh, October 2018
+# M. Walsh, (Dec. 2021, update)
 
 # install.packages(c("downloader","rgdal","raster","BalancedSampling","leaflet","htmlwidgets"), dependencies=T)
 suppressPackageStartupMessages({
